@@ -7,15 +7,12 @@ import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Music extends SubsystemBase {
-  Orchestra orchestra;
+  Orchestra orchestra = new Orchestra();
 
   public Music(CommandSwerveDrivetrain drivetrain) {
-
-    orchestra = new Orchestra();
     for(TalonFX motor : drivetrain.getMotors()){
       orchestra.addInstrument(motor);
     }
-    
   }
 
   @Override

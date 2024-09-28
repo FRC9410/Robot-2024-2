@@ -15,16 +15,11 @@ import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.BaseSubsystem;
 
 public class ShooterFeeder extends BaseSubsystem {
-  private final VelocityVoltage feederVoltageVelocity;
-  private final TalonFX feeder;
-  private final NeutralOut brake;
+  private final TalonFX feeder = new TalonFX(SubsystemConstants.ShooterFeeder.kFeederCanId, RobotConstants.kCtreCanBusName);
+  private final VelocityVoltage feederVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private final NeutralOut brake = new NeutralOut();
 
   public ShooterFeeder() {
-    feederVoltageVelocity = new VelocityVoltage(
-      0, 0, false, 0, 0, false, false, false);
-    feeder = new TalonFX(SubsystemConstants.ShooterFeeder.kFeederCanId, RobotConstants.kCtreCanBusName);
-    brake = new NeutralOut();
-
     setConfigs(feeder);
   }
 

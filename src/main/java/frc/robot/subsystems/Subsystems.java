@@ -11,26 +11,19 @@ import java.util.Map;
 /** Add your docs here. */
 public class Subsystems {
     private CommandSwerveDrivetrain drivetrain;
-    private Leds leds;
+    private Leds leds = new Leds();
     private Music music;
-    private Vision vision;
+    private Vision vision = new Vision();
+    private IntakeWrist intakeWrist = new IntakeWrist();
+    private IntakeRollers intakeRollers = new IntakeRollers();
+    private ShooterWrist shooterWrist = new ShooterWrist();
+    private ShooterFeeder shooterFeeder = new ShooterFeeder();
+    private ShooterWheels shooterWheels = new ShooterWheels();
     private RobotState robotState;
-    private IntakeWrist intakeWrist;
-    private IntakeRollers intakeRollers;
-    private ShooterWrist shooterWrist;
-    private ShooterFeeder shooterFeeder;
-    private ShooterWheels shooterWheels;
 
     public Subsystems(CommandXboxController controller) {
         this.drivetrain = TunerConstants.DriveTrain;
-        this.leds = new Leds();
         this.music = new Music(drivetrain);
-        this.vision = new Vision();
-        this.intakeWrist = new IntakeWrist();
-        this.intakeRollers = new IntakeRollers();
-        this.shooterWrist = new ShooterWrist();
-        this.shooterFeeder = new ShooterFeeder();
-        this.shooterWheels = new ShooterWheels();
         this.robotState = new RobotState(drivetrain, vision, shooterFeeder, shooterWheels, controller);
     }
 

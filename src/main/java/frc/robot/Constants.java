@@ -6,6 +6,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import java.util.List;
@@ -171,12 +172,22 @@ public final class Constants
 
   public static final class FieldConstants {
     public static final double centerLine = 8.22;
+
     public static final double speakerY = 5.55;
     public static final double blueSpeakerX = -0.2;
     public static final double redSpeakerX = centerLine * 2 - blueSpeakerX;
+
     public static final double ampY = 7.4;
     public static final double blueAmpX = 1.9;
     public static final double redAmpX = centerLine * 2 - blueAmpX;
+
+    public static final double subwooferRadius = 1.5;
+
+    public static final double stageLowY = 3.3;
+    public static final double stageHighY = 4.9;
+    public static final double blueStageX = 4.4;
+    public static final double redStageX = centerLine * 2 - blueStageX;
+
     public static final double shooterRange = 3.5;
     public static final double ampRange = 0.1;
   }
@@ -258,6 +269,35 @@ public final class Constants
       public static final double kFF = 4.75;
       public static final double kSpeakerShooterSpeed = 0;
       public static final double kSpeakerFeederSpeed = -45;
+    }
+    
+    public static final class Elevator
+    {
+    public static final int kPrimaryElevatorCanId = 41;
+    public static final int kSecondaryElevatorCanId = 42;
+    public static double kP = 0.5; 
+    public static double kI = 0;
+    public static double kD = 0; 
+    public static double kIz = 0; 
+    public static double kFF = 0; 
+    public static double kMaxOutput = 0.5; 
+    public static double kMinOutput = -0.5;
+    public static double kOffset = 0.7;
+    public static double kMaxRotation = -80;
+    public static double kMinRotation = 0;
+
+    public static final double maxAcc = 25000;
+    public static final double maxVel = 11000;
+    public static final double allowedError = 0;
+
+    public static final int kCPR = 8192;
+    public static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
+    }
+    
+    public static final class Leds
+    {
+      public static final int kLedId = 23;
+      public static final String kLedBus = "rio";
     }
   }
 }

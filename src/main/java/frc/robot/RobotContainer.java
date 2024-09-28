@@ -6,18 +6,21 @@ import frc.robot.subsystems.Subsystems;
 import frc.robot.commands.base.DefaultDriveCommand;
 import frc.robot.commands.base.DefaultIntakeRollersCommand;
 import frc.robot.commands.base.DefaultIntakeWristCommand;
+import frc.robot.commands.base.DefaultShooterFeederCommand;
+import frc.robot.commands.base.DefaultShooterWheelsCommand;
+import frc.robot.commands.base.DefaultShooterWristCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController copilotController = new CommandXboxController(1);
   private Subsystems subsystems = new Subsystems(driverController);
   // private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
-  private boolean devMode = false;
 
   public RobotContainer() {
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
     configurePilotBindings();
     configureCopilotBindings();
+    configureDefaultBindings();
   }
 
   private void configurePilotBindings() {
@@ -25,7 +28,20 @@ public class RobotContainer {
       subsystems.getDrivetrain().resetPose();
       subsystems.getDrivetrain().seedFieldRelative();
     }));
+  }
+  
+  private void configureCopilotBindings() {
     
+    /* Bindings for drivetrain characterization */
+    /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
+    /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
+    // copilotController.back().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kForward));
+    // copilotController.back().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kReverse));
+    // copilotController.start().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kForward));
+    // copilotController.start().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kReverse));
+  }
+
+  private void configureDefaultBindings() {
     subsystems.getDrivetrain().setDefaultCommand(
       new DefaultDriveCommand(
         subsystems.getDrivetrain(),
@@ -41,17 +57,21 @@ public class RobotContainer {
       new DefaultIntakeRollersCommand(
         subsystems.getIntakeRollers(),
         subsystems.getRobotState()));
-  }
-  
-  private void configureCopilotBindings() {
-    
-    /* Bindings for drivetrain characterization */
-    /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
-    /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
-    // copilotController.back().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kForward));
-    // copilotController.back().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kReverse));
-    // copilotController.start().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kForward));
-    // copilotController.start().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kReverse));
+
+    subsystems.getShooterFeeder().setDefaultCommand(
+      new DefaultShooterFeederCommand(
+        subsystems.getShooterFeeder(),
+        subsystems.getRobotState()));
+
+    subsystems.getShooterWrist().setDefaultCommand(
+      new DefaultShooterWristCommand(
+        subsystems.getShooterWrist(),
+        subsystems.getRobotState()));
+
+    subsystems.getShooterWheels().setDefaultCommand(
+      new DefaultShooterWheelsCommand(
+        subsystems.getShooterWheels(),
+        subsystems.getRobotState()));
   }
 
   public Subsystems getSubsystems() {

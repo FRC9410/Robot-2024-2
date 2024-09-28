@@ -14,13 +14,12 @@ public class DefaultIntakeWristCommand extends Command {
   private IntakeWrist intakeWrist;
   private RobotState robotState;
   private State state;
-  private Timer timer;
+  private Timer timer = new Timer();
 
   public DefaultIntakeWristCommand(IntakeWrist intakeWrist, RobotState robotState) {
     this.intakeWrist = intakeWrist;
     this.robotState = robotState;
     this.state = robotState.getState();
-    this.timer = new Timer();
     addRequirements(intakeWrist);
   }
 
@@ -31,7 +30,11 @@ public class DefaultIntakeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState() == State.INTAKING) {
+    if (robotState.getState().equals(State.DEMO_MODE)) {
+      // do nothing
+    } else if (robotState.getState().equals(State.DEV_MODE)) {
+      // do nothing
+    } else if (robotState.getState() == State.INTAKING) {
       state = robotState.getState();
       intakeWrist.setAngle(0.5);
     } else {

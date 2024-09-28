@@ -14,12 +14,11 @@ public class DefaultIntakeRollersCommand extends Command {
   private IntakeRollers intakeRollers;
   private RobotState robotState;
   private State state;
-  private Timer timer;
+  private Timer timer = new Timer();
 
   public DefaultIntakeRollersCommand(IntakeRollers intakeRollers, RobotState robotState) {
     this.intakeRollers = intakeRollers;
     this.robotState = robotState;
-    this.timer = new Timer();
     addRequirements(intakeRollers);
   }
 
@@ -30,7 +29,11 @@ public class DefaultIntakeRollersCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState() == State.INTAKING) {
+    if (robotState.getState().equals(State.DEMO_MODE)) {
+      // do nothing
+    } else if (robotState.getState().equals(State.DEV_MODE)) {
+      // do nothing
+    } else if (robotState.getState() == State.INTAKING) {
       state = robotState.getState();
       intakeRollers.setTorque(0, 0);
     } else if (robotState.getState() == State.SHOOTING) {

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
@@ -15,6 +17,8 @@ import frc.team9410.lib.Utility;
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class RobotState extends SubsystemBase {
@@ -24,20 +28,22 @@ public class RobotState extends SubsystemBase {
   private final ShooterFeeder feeder;
   private final ShooterWheels shooterWheels;
   private final CommandXboxController controller;
+  private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private final NetworkTable dashboardTable = inst.getTable("Dashboard");
 
-  private final LaserCan intakeLaser;
+  private final LaserCan intakeLaser = new LaserCan(13);
 
-  private State state;
-  private String allianceColor;
-  private double locationX;
-  private double locationY;
-  private double rotation;
+  private State state = State.IDLE;
+  private String allianceColor = Utility.getAllianceColor();
+  private double locationX = -1;
+  private double locationY = -1;
+  private double rotation = 0;
 
-  private double targetX;
-  private double targetY;
-  private Optional<Rotation2d> targetRotation;
+  private double targetX = -1;
+  private double targetY = -1;
+  private Optional<Rotation2d> targetRotation = Optional.empty();
 
-  private boolean isFollowingPath;
+  private boolean isFollowingPath = false;
 
   public RobotState(CommandSwerveDrivetrain drivetrain, Vision vision, ShooterFeeder shooterFeeder, ShooterWheels shooterWheels, CommandXboxController controller) {
     this.drivetrain = drivetrain;
@@ -45,18 +51,6 @@ public class RobotState extends SubsystemBase {
     this.feeder = shooterFeeder;
     this.shooterWheels = shooterWheels;
     this.controller = controller;
-
-    intakeLaser = new LaserCan(13);
-
-    state = State.IDLE;
-    allianceColor = Utility.getAllianceColor();
-    locationX = -1;
-    locationY = -1;
-    rotation = 0;
-    targetX = -1;
-    targetY = -1;
-    targetRotation = Optional.empty();
-    isFollowingPath = false;
 
     try {
       intakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
@@ -74,11 +68,30 @@ public class RobotState extends SubsystemBase {
     locationX = pose.getX();
     locationY = pose.getY();
     rotation = pose.getRotation().getDegrees();
-    isFollowingPath = controller.a().getAsBoolean();
 
-    if (controller.getLeftTriggerAxis() > 0.5
+    if (dashboardTable.getEntry("Development Mode").getBoolean(false)
+      && state != State.DEV_MODE) {
+      state = State.DEV_MODE;
+    } else if (state == State.DEV_MODE) {
+      state = State.IDLE;
+    }
+
+    if (!state.equals(State.DEV_MODE)
+      && !state.equals(State.DEMO_MODE)
+      && controller.a().getAsBoolean()) {
+      isFollowingPath = controller.a().getAsBoolean();
+    } else {
+      isFollowingPath = false;
+    }
+
+    if (State.DEMO_MODE.equals(state)) {
+      clearDestination();
+    } else if (State.DEV_MODE.equals(state)) {
+      clearDestination();
+    } else if (controller.getLeftTriggerAxis() > 0.5
       && !hasGamePiece()
       && hasTarget()) {
+      clearDestination();
       state = State.INTAKING;
 
       if (targetRotation.isPresent()) {
@@ -90,6 +103,7 @@ public class RobotState extends SubsystemBase {
       && isInZone()) {
       state = State.SHOOTING_READY;
       targetRotation = Optional.of(Rotation2d.fromRadians(getShootingAngle()));
+      setSpeakerDestination(allianceColor);
     } else if (controller.getLeftTriggerAxis() > 0.5
       && hasGamePiece()
       && hasTarget()
@@ -103,6 +117,7 @@ public class RobotState extends SubsystemBase {
       && isInZone()) {
       state = State.DUNKING_READY;
       targetRotation = Optional.of(Rotation2d.fromDegrees(90));
+      setAmpDestination(allianceColor);
     } else if (controller.rightBumper().getAsBoolean()
       && hasGamePiece()
       && hasTarget()
@@ -110,8 +125,15 @@ public class RobotState extends SubsystemBase {
       && shooterIsReady()) {
       state = State.DUNKING;
       targetRotation = Optional.of(Rotation2d.fromDegrees(90));
-    }  else {
+    } else if (controller.povLeft().getAsBoolean()) {
+      state = State.CLIMBING_READY;
+      setStageDestination(allianceColor, allianceColor.equals("blue") ? "high" : "low");
+    } else if (controller.povRight().getAsBoolean()) {
+      state = State.CLIMBING_READY;
+      setStageDestination(allianceColor, allianceColor.equals("blue") ? "low" : "high");
+    } else {
       state = State.IDLE;
+      clearDestination();
       
       if (targetRotation.isPresent()) {
         targetRotation = Optional.empty();
@@ -161,7 +183,10 @@ public class RobotState extends SubsystemBase {
       SHOOTING,
       SHOOTING_READY,
       DUNKING,
-      DUNKING_READY
+      DUNKING_READY,
+      CLIMBING_READY,
+      DEV_MODE,
+      DEMO_MODE
   }
 
   public boolean hasGamePiece() {
@@ -235,5 +260,48 @@ public class RobotState extends SubsystemBase {
     return feederVelocity > 60
       && shooterPrimaryWheelVelocity > 75
       && shooterSecondaryWheelVelocity > 75;
+  }
+
+  public void setAmpDestination(String allianceColor) {
+    targetX = allianceColor.equals("blue") ? FieldConstants.blueAmpX : FieldConstants.redAmpX;
+    targetY = FieldConstants.ampY;
+  }
+
+  public void setSpeakerDestination(String allianceColor) {
+    double speakerX = allianceColor.equals("blue") ? FieldConstants.blueSpeakerX : FieldConstants.redSpeakerX;
+    double speakerY = FieldConstants.speakerY;
+
+    // Calculate direction vector
+    double directionX = speakerX - locationX;
+    double directionY = speakerY - locationY;
+
+    // Calculate the magnitude of the direction vector
+    double magnitude = Math.sqrt(directionX * directionX + directionY * directionY);
+
+    // Normalize the direction vector
+    double unitDirectionX = directionX / magnitude;
+    double unitDirectionY = directionY / magnitude;
+
+    // Calculate the intersection point (the point on the circle's boundary)
+    double intersectX = speakerX - FieldConstants.subwooferRadius * unitDirectionX;
+    double intersectY = speakerY - FieldConstants.subwooferRadius * unitDirectionY;
+
+    targetX = intersectX;
+    targetY = intersectY;
+  }
+
+  public void setStageDestination(String allianceColor, String location) {
+    targetX = allianceColor.equals("blue") ? FieldConstants.blueStageX : FieldConstants.redStageX;
+    targetY = location.equals("high") ? FieldConstants.stageHighY : FieldConstants.stageLowY;
+  }
+
+  public void clearDestination() {
+    if (targetX != -1) {
+      targetX = -1;
+    }
+
+    if (targetY != -1) {
+      targetY = -1;
+    }
   }
 }

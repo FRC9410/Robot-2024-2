@@ -17,26 +17,19 @@ import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.ControlledSubsystem;
 
 public class ShooterWrist extends ControlledSubsystem {
-  final private CANSparkMax primaryWrist;
-  final private CANSparkMax secondaryWrist;
-  final private SparkPIDController pidController;
-  final private RelativeEncoder encoder;
-
-  private double setpoint;
+  final private CANSparkMax primaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kPrimaryWristCanId, MotorType.kBrushless);
+  final private CANSparkMax secondaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
+  final private SparkPIDController pidController = primaryWrist.getPIDController();
+  final private RelativeEncoder encoder = primaryWrist.getEncoder();
+  private double setpoint = SubsystemConstants.ShooterWrist.kMinRotation;
 
   public ShooterWrist() {
-    primaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kPrimaryWristCanId, MotorType.kBrushless);
-    secondaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.follow(primaryWrist, true);
     this.primaryWrist.setIdleMode(IdleMode.kBrake);
     this.secondaryWrist.setIdleMode(IdleMode.kBrake);
 
-
-    this.pidController = primaryWrist.getPIDController();
-
-    this.encoder = primaryWrist.getEncoder();
     this.encoder.setPosition(-0.2);
     this.pidController.setFeedbackDevice(encoder);
 
@@ -51,7 +44,6 @@ public class ShooterWrist extends ControlledSubsystem {
     pidController.setSmartMotionMaxVelocity(SubsystemConstants.ShooterWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(SubsystemConstants.ShooterWrist.allowedError, 0);
     
-    this.setpoint = SubsystemConstants.ShooterWrist.kMinRotation;
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
 
     createSubsystemTable("Shooter Wrist");

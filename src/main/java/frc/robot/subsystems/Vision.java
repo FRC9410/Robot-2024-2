@@ -16,15 +16,12 @@ public class Vision extends SubsystemBase {
     public final String GAME_PIECE_TABLE_NAME = "limelight-game-piece";
     public final String TAG_TABLE_NAME = "limelight-targeting";
 
-    public NetworkTable gamePieceTable;
-    public NetworkTable tagTable;
+    public NetworkTable gamePieceTable = NetworkTableInstance.getDefault().getTable(GAME_PIECE_TABLE_NAME);
+    public NetworkTable tagTable = NetworkTableInstance.getDefault().getTable(TAG_TABLE_NAME);
 
     /** Creates a new Vision. */
     public Vision() {
-        gamePieceTable = NetworkTableInstance.getDefault().getTable(GAME_PIECE_TABLE_NAME);
         gamePieceTable.getEntry("ledMode").setNumber(1);
-
-        tagTable = NetworkTableInstance.getDefault().getTable(TAG_TABLE_NAME);
         tagTable.getEntry("ledMode").setNumber(1);
     }
 

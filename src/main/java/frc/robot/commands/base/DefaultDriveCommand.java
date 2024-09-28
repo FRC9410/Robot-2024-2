@@ -36,7 +36,11 @@ public class DefaultDriveCommand extends Command {
 
   @Override
   public void execute() {
-    if (robotState.getIsFollowingPath()) {
+    if (robotState.getState().equals(State.DEMO_MODE)) {
+      // do nothing
+    } else if (robotState.getIsFollowingPath()
+      && robotState.getTargetX() > 0
+      && robotState.getTargetY() > 0) {
       followTrajectory();
     }
     else if (robotState.getTargetRotation().isPresent()){

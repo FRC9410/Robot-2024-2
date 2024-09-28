@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SubsystemConstants;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -13,15 +14,11 @@ import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 
 public class Leds extends SubsystemBase {
-    public final int CANDLE_ID = 23;
-    public final String CANDLE_CAN_BUS = "rio";
-
-    private CANdle candle;
+    private final CANdle candle = new CANdle(SubsystemConstants.Leds.kLedId, SubsystemConstants.Leds.kLedBus);
+    private final CANdleConfiguration configAll = new CANdleConfiguration();
 
     /** Creates a new Leds. */
     public Leds() {
-        candle = new CANdle(CANDLE_ID, CANDLE_CAN_BUS);
-        CANdleConfiguration configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = true;
         configAll.disableWhenLOS = false;
         configAll.stripType = LEDStripType.GRB;

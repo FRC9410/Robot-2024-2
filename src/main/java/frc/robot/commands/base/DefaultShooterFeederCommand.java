@@ -14,13 +14,12 @@ public class DefaultShooterFeederCommand extends Command {
   private ShooterFeeder shooterFeeder;
   private RobotState robotState;
   private State state;
-  private Timer timer;
+  private Timer timer = new Timer();
 
   public DefaultShooterFeederCommand(ShooterFeeder shooterFeeder, RobotState robotState) {
     this.shooterFeeder = shooterFeeder;
     this.robotState = robotState;
     this.state = robotState.getState();
-    this.timer = new Timer();
     addRequirements(shooterFeeder);
   }
 
@@ -31,7 +30,11 @@ public class DefaultShooterFeederCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState() == State.DUNKING
+    if (robotState.getState().equals(State.DEMO_MODE)) {
+      // do nothing
+    } else if (robotState.getState().equals(State.DEV_MODE)) {
+      // do nothing
+    } else if (robotState.getState() == State.DUNKING
       && state != State.DUNKING) {
       state = robotState.getState();
       timer.start();

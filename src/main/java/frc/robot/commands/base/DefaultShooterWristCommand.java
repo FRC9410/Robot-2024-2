@@ -14,13 +14,12 @@ public class DefaultShooterWristCommand extends Command {
   private ShooterWrist shooterWrist;
   private RobotState robotState;
   private State state;
-  private Timer timer;
+  private Timer timer = new Timer();
 
   public DefaultShooterWristCommand(ShooterWrist shooterWrist, RobotState robotState) {
     this.shooterWrist = shooterWrist;
     this.robotState = robotState;
     this.state = robotState.getState();
-    this.timer = new Timer();
     addRequirements(shooterWrist);
   }
 
@@ -31,7 +30,11 @@ public class DefaultShooterWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState() == State.DUNKING
+    if (robotState.getState().equals(State.DEMO_MODE)) {
+      // do nothing
+    } else if (robotState.getState().equals(State.DEV_MODE)) {
+      // do nothing
+    } else if (robotState.getState() == State.DUNKING
           && state != State.DUNKING) {
         state = robotState.getState();
         timer.start();

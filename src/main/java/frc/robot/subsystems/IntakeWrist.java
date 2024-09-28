@@ -18,13 +18,12 @@ import frc.robot.Constants.SubsystemConstants;
 
 public class IntakeWrist extends ControlledSubsystem {
 
-  private SparkPIDController pidController;
-  private AbsoluteEncoder encoder;
 
-  CANSparkMax primaryWrist = new CANSparkMax(SubsystemConstants.IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
-  CANSparkMax secondaryWrist = new CANSparkMax(SubsystemConstants.IntakeWrist.kSecondaryWristCanId, MotorType.kBrushless);
-
-  private double setpoint;
+  private final CANSparkMax primaryWrist = new CANSparkMax(SubsystemConstants.IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
+  private final CANSparkMax secondaryWrist = new CANSparkMax(SubsystemConstants.IntakeWrist.kSecondaryWristCanId, MotorType.kBrushless);
+  private final SparkPIDController pidController = primaryWrist.getPIDController();
+  private final AbsoluteEncoder encoder = primaryWrist.getAbsoluteEncoder(SubsystemConstants.IntakeWrist.kAbsEncType);
+  private final double setpoint = SubsystemConstants.IntakeWrist.kMinRotation;
 
   public IntakeWrist() {
     this.primaryWrist.restoreFactoryDefaults();
@@ -32,10 +31,7 @@ public class IntakeWrist extends ControlledSubsystem {
     this.secondaryWrist.follow(primaryWrist, true);
     this.primaryWrist.setIdleMode(IdleMode.kBrake);
     this.secondaryWrist.setIdleMode(IdleMode.kBrake);
-
-    this.pidController = primaryWrist.getPIDController();
-
-    this.encoder = primaryWrist.getAbsoluteEncoder(SubsystemConstants.IntakeWrist.kAbsEncType);
+    
     this.encoder.setZeroOffset(SubsystemConstants.IntakeWrist.kOffset);
     this.pidController.setFeedbackDevice(encoder);
 
@@ -47,8 +43,6 @@ public class IntakeWrist extends ControlledSubsystem {
     pidController.setSmartMotionMaxAccel(SubsystemConstants.IntakeWrist.maxAcc, 0);
     pidController.setSmartMotionMaxVelocity(SubsystemConstants.IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(SubsystemConstants.IntakeWrist.allowedError, 0);
-
-    setpoint = SubsystemConstants.IntakeWrist.kMinRotation;
 
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
 

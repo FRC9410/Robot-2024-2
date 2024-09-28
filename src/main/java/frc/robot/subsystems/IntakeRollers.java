@@ -17,17 +17,12 @@ import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.BaseSubsystem;
 
 public class IntakeRollers extends BaseSubsystem {
-  private final TalonFX intake;
-  private final VelocityVoltage voltageVelocity;
-  private final VelocityTorqueCurrentFOC torqueVelocity;
-  private final NeutralOut brake;
+  private final TalonFX intake = new TalonFX(SubsystemConstants.IntakeRollers.kIntakeCanId, RobotConstants.kCtreCanBusName);
+  private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
+  private final NeutralOut brake = new NeutralOut();
 
   public IntakeRollers() {
-    intake = new TalonFX(SubsystemConstants.IntakeRollers.kIntakeCanId, RobotConstants.kCtreCanBusName);
-    voltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
-    torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
-    brake = new NeutralOut();
-
     setConfigs(intake);
   }
 

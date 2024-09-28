@@ -16,19 +16,13 @@ import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.BaseSubsystem;
 
 public class ShooterWheels extends BaseSubsystem {
-  final private TalonFX primaryWheel;
-  final private TalonFX secondaryWheel;
-  final private VelocityVoltage secondaryWheelVoltageVelocity;
-  final private VelocityVoltage primaryWheelVoltageVelocity;
-  final private NeutralOut brake;
+  final private TalonFX primaryWheel = new TalonFX(SubsystemConstants.ShooterWheels.kPrimaryWheelCanId, RobotConstants.kCtreCanBusName);
+  final private TalonFX secondaryWheel = new TalonFX(SubsystemConstants.ShooterWheels.kSecondaryWheelCanId, RobotConstants.kCtreCanBusName);
+  final private VelocityVoltage secondaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+  final private VelocityVoltage primaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+  final private NeutralOut brake = new NeutralOut();
 
   public ShooterWheels() {
-    primaryWheel = new TalonFX(SubsystemConstants.ShooterWheels.kPrimaryWheelCanId, RobotConstants.kCtreCanBusName);
-    secondaryWheel = new TalonFX(SubsystemConstants.ShooterWheels.kSecondaryWheelCanId, RobotConstants.kCtreCanBusName);
-    secondaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-    primaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-    brake = new NeutralOut();
-
     setConfigs(primaryWheel);
     setConfigs(secondaryWheel);
   }
