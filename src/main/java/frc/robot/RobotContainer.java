@@ -1,14 +1,11 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.subsystems.Subsystems;
 import frc.robot.commands.base.DefaultDriveCommand;
+import frc.robot.commands.base.DefaultIntakeRollersCommand;
+import frc.robot.commands.base.DefaultIntakeWristCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -33,6 +30,16 @@ public class RobotContainer {
       new DefaultDriveCommand(
         subsystems.getDrivetrain(),
         driverController,
+        subsystems.getRobotState()));
+
+    subsystems.getIntakeWrist().setDefaultCommand(
+      new DefaultIntakeWristCommand(
+        subsystems.getIntakeWrist(),
+        subsystems.getRobotState()));
+
+    subsystems.getIntakeRollers().setDefaultCommand(
+      new DefaultIntakeRollersCommand(
+        subsystems.getIntakeRollers(),
         subsystems.getRobotState()));
   }
   

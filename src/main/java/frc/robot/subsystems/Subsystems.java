@@ -2,13 +2,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
 import frc.robot.TunerConstants;
-import frc.team9410.lib.LimelightHelpers;
 
 import java.util.Map;
 
@@ -19,16 +15,23 @@ public class Subsystems {
     private Music music;
     private Vision vision;
     private RobotState robotState;
-    private Test test;
+    private IntakeWrist intakeWrist;
+    private IntakeRollers intakeRollers;
+    private ShooterWrist shooterWrist;
+    private ShooterFeeder shooterFeeder;
+    private ShooterWheels shooterWheels;
 
     public Subsystems(CommandXboxController controller) {
         this.drivetrain = TunerConstants.DriveTrain;
         this.leds = new Leds();
-        this.music = new Music(this.drivetrain);
+        this.music = new Music(drivetrain);
         this.vision = new Vision();
-        this.robotState = new RobotState(this.drivetrain, this.vision, controller);
-
-        this.test = new Test();
+        this.intakeWrist = new IntakeWrist();
+        this.intakeRollers = new IntakeRollers();
+        this.shooterWrist = new ShooterWrist();
+        this.shooterFeeder = new ShooterFeeder();
+        this.shooterWheels = new ShooterWheels();
+        this.robotState = new RobotState(drivetrain, vision, shooterFeeder, shooterWheels, controller);
     }
 
     public CommandSwerveDrivetrain getDrivetrain() {
@@ -51,8 +54,24 @@ public class Subsystems {
         return vision;
     }
 
-    public Test getTest() {
-        return test;
+    public IntakeWrist getIntakeWrist() {
+        return intakeWrist;
+    }
+
+    public IntakeRollers getIntakeRollers() {
+        return intakeRollers;
+    }
+
+    public ShooterWrist getShooterWrist() {
+        return shooterWrist;
+    }
+
+    public ShooterFeeder getShooterFeeder() {
+        return shooterFeeder;
+    }
+
+    public ShooterWheels getShooterWheels() {
+        return shooterWheels;
     }
 
     public void setDisabledIdleMode() {

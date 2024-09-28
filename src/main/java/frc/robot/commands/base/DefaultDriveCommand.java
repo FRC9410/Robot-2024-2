@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DriveMode;
+import frc.robot.subsystems.RobotState.State;
 import frc.robot.subsystems.RobotState;
 
 import frc.team9410.lib.Utility;
@@ -39,17 +40,23 @@ public class DefaultDriveCommand extends Command {
       followTrajectory();
     }
     else if (robotState.getTargetRotation().isPresent()){
-      followPathCommand.cancel();
+      if (followPathCommand != null) {
+        followPathCommand.cancel();
+      }
+
       drivetrain.drive(
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
         robotState.getTargetRotation(),
-        DriveMode.FIELD_RELATIVE);
+        robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
     }
     else {
-      followPathCommand.cancel();
+      if (followPathCommand != null) {
+        followPathCommand.cancel();
+      }
+      
       drivetrain.drive(
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxSpeed,
         DriveMode.FIELD_RELATIVE);
@@ -72,6 +79,10 @@ public class DefaultDriveCommand extends Command {
     );
     
     followPathCommand = AutoBuilder.followPath(path);
+  }
+
+  private int getDirection() {
+    return robotState.getAllianceColor() == "blue" ? 1 : -1;
   }
 
   @Override

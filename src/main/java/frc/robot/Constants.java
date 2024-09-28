@@ -6,7 +6,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import java.util.List;
@@ -168,5 +167,97 @@ public final class Constants
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class FieldConstants {
+    public static final double centerLine = 8.22;
+    public static final double speakerY = 5.55;
+    public static final double blueSpeakerX = -0.2;
+    public static final double redSpeakerX = centerLine * 2 - blueSpeakerX;
+    public static final double ampY = 7.4;
+    public static final double blueAmpX = 1.9;
+    public static final double redAmpX = centerLine * 2 - blueAmpX;
+    public static final double shooterRange = 3.5;
+    public static final double ampRange = 0.1;
+  }
+
+  public static final class SubsystemConstants {
+    public static final class IntakeWrist
+    {
+      public static final int kPrimaryWristCanId = 11;
+      public static final int kSecondaryWristCanId = 12;
+
+      public static double kP = 5; 
+      public static double kI = 0;
+      public static double kD = 0; 
+      public static double kIz = 0; 
+      public static double kFF = 0; 
+      public static double kMaxOutput = 1; 
+      public static double kMinOutput = -1;
+      public static double kOffset = 0.7;
+      public static double kMaxRotation = 0.64;
+      public static double kMinRotation = 0.11;
+
+      public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
+      public static final int kCPR = 8192;
+
+      public static final double maxAcc = 25000;
+      public static final double maxVel = 11000;
+      public static final double allowedError = 0;
+
+      //copy the above array and subtract 20.7 from every value
+    }
+    
+    public static final class IntakeRollers
+    {
+      public static final int kIntakeCanId = 10;
+    }
+    
+    public static final class ShooterWrist
+    {
+      public static final int kPrimaryWristCanId = 31;
+      public static final int kSecondaryWristCanId = 32;
+  
+      public static double kP = 0.5; 
+      public static double kI = 0;
+      public static double kD = 0; 
+      public static double kIz = 0; 
+      public static double kFF = 0; 
+      public static double kMaxOutput = 0.5; 
+      public static double kMinOutput = -0.5;
+      public static double kMinRotation = 0.0;
+      public static double kMaxRotation = 16.0;
+  
+      public static final double maxAcc = 25000;
+      public static final double maxVel = 11000;
+      public static final double allowedError = 0;
+  
+      public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
+      public static final int kCPR = 8192;
+  
+      public static final double [][] wristAngles = {
+        {1.13, 0.2},
+        {0.77, 0.7},
+        {0.59, 1.0},
+        {0.44, 1.3},
+        {0.4, 1.5},
+        {0.34, 1.6}
+      };
+    }
+    
+    public static final class ShooterFeeder
+    {
+      public static final int kFeederCanId = 20;
+    }
+    
+    public static final class ShooterWheels
+    {
+      public static final int kPrimaryWheelCanId = 21;
+      public static final int kSecondaryWheelCanId = 22;
+      public static final double kP = 0.56;
+      public static final double kFF = 4.75;
+      public static final double kSpeakerShooterSpeed = 0;
+      public static final double kSpeakerFeederSpeed = -45;
+    }
   }
 }
