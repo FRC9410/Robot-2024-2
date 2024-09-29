@@ -49,8 +49,8 @@ public class DefaultDriveCommand extends Command {
       }
 
       drivetrain.drive(
-        robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
         robotState.getTargetRotation(),
         robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
     }
@@ -61,7 +61,7 @@ public class DefaultDriveCommand extends Command {
       
       drivetrain.drive(
         Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxSpeed,
         DriveMode.FIELD_RELATIVE);
     }

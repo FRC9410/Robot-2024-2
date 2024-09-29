@@ -79,7 +79,6 @@ public class Subsystems {
         Map<String, Object> poseWitTimeEstimate = vision.getPoseEstimate(drivetrain.getPose().getRotation().getDegrees());
         if (poseWitTimeEstimate != null) {
             Pose2d pose = (Pose2d) poseWitTimeEstimate.get("pose");
-            pose.rotateBy(Rotation2d.fromDegrees(180));
             drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
             drivetrain.addVisionMeasurement(
                 pose,

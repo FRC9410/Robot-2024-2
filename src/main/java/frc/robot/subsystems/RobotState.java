@@ -240,7 +240,7 @@ public class RobotState extends SubsystemBase {
 
   public double getShootingAngle() {
     if (!isWithinRange()) {
-      return allianceColor.equals("blue") ? 180 : 0;
+      return allianceColor.equals("blue") ? 0 : 180;
     }
 
     if (allianceColor.equals("blue") && locationX < FieldConstants.centerLine) {
@@ -249,6 +249,16 @@ public class RobotState extends SubsystemBase {
       return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.redSpeakerX - locationX);
     } else {
       return 0;
+    }
+  }
+
+  public void setAmpAngle() {
+    if (allianceColor.equals("blue") && locationX > FieldConstants.centerLine) {
+      targetRotation = Optional.of(Rotation2d.fromDegrees(0));
+    } else if (allianceColor.equals("red") && locationX > FieldConstants.centerLine) {
+      targetRotation = Optional.of(Rotation2d.fromDegrees(180));
+    } else {
+      targetRotation = Optional.of(Rotation2d.fromDegrees(90));
     }
   }
 
