@@ -116,7 +116,7 @@ public class RobotState extends SubsystemBase {
       && hasTarget()
       && isInZone()) {
       state = State.DUNKING_READY;
-      targetRotation = Optional.of(Rotation2d.fromDegrees(90));
+      setAmpAngle();
       setAmpDestination(allianceColor);
     } else if (controller.rightBumper().getAsBoolean()
       && hasGamePiece()
@@ -124,7 +124,7 @@ public class RobotState extends SubsystemBase {
       && isWithinRange()
       && shooterIsReady()) {
       state = State.DUNKING;
-      targetRotation = Optional.of(Rotation2d.fromDegrees(90));
+      setAmpAngle();
     } else if (controller.povLeft().getAsBoolean()) {
       state = State.CLIMBING_READY;
       setStageDestination(allianceColor, allianceColor.equals("blue") ? "high" : "low");
