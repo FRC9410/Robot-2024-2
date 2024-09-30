@@ -64,6 +64,10 @@ public class IntakeWrist extends ControlledSubsystem {
     this.pidController.setReference(SubsystemConstants.IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
   }
 
+  public double getPosition() {
+    return encoder.getPosition();
+  }
+
   public void setEnableIdleMode() {
     setAllMotorsBrakeMode();
   }

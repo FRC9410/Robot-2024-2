@@ -36,7 +36,7 @@ public class DefaultDriveCommand extends Command {
 
   @Override
   public void execute() {
-    if (robotState.getState().equals(State.DEMO_MODE)) {
+    if (robotState.getState().equals(State.DEMO_MODE) || robotState.getState().equals(State.DUNKING)) {
       // do nothing
     } else if (robotState.getIsFollowingPath()
       && robotState.getTargetX() > 0

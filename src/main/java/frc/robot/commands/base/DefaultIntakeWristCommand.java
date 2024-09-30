@@ -30,25 +30,14 @@ public class DefaultIntakeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState().equals(State.DEMO_MODE)) {
+    state = robotState.getState();
+
+    if (state.equals(State.DEMO_MODE)) {
       // do nothing
-    } else if (robotState.getState().equals(State.DEV_MODE)) {
+    } else if (state.equals(State.DEV_MODE)) {
       // do nothing
-    } else if (robotState.getState() == State.INTAKING) {
-      state = robotState.getState();
-      intakeWrist.setAngle(0.5);
     } else {
-      if (robotState.getState() != State.INTAKING
-        && state == State.INTAKING) {
-        state = robotState.getState();
-        timer.start();
-      }
-      
-      if (timer.get() > 0.5) {
-        intakeWrist.setMinAngle();
-        timer.stop();
-        timer.reset();
-      }
+      // do nothing
     }
   }
 

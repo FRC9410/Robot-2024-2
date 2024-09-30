@@ -4,23 +4,15 @@
 
 package frc.robot.commands.base;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterWrist;
 import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.RobotState.State;
 
 public class DefaultShooterWristCommand extends Command {
-  private ShooterWrist shooterWrist;
-  private RobotState robotState;
   private State state;
-  private Timer timer = new Timer();
 
-  public DefaultShooterWristCommand(ShooterWrist shooterWrist, RobotState robotState) {
-    this.shooterWrist = shooterWrist;
-    this.robotState = robotState;
+  public DefaultShooterWristCommand(RobotState robotState) {
     this.state = robotState.getState();
-    addRequirements(shooterWrist);
   }
 
   // Called when the command is initially scheduled.
@@ -30,23 +22,12 @@ public class DefaultShooterWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState().equals(State.DEMO_MODE)) {
+    if (state.equals(State.DEMO_MODE)) {
       // do nothing
-    } else if (robotState.getState().equals(State.DEV_MODE)) {
+    } else if (state.equals(State.DEV_MODE)) {
       // do nothing
-    } else if (robotState.getState() == State.DUNKING
-          && state != State.DUNKING) {
-        state = robotState.getState();
-        timer.start();
-    } else if (robotState.getState() == State.DUNKING
-        && timer.get() > 1) {
-        shooterWrist.setWristAngle(5);
-    } else if (robotState.getState() != State.DUNKING
-        && state == State.DUNKING && timer.get() > 4) {
-        shooterWrist.setWristAngle(0.4);
-        state = robotState.getState();
-        timer.stop();
-        timer.reset();
+    } else {
+      // do nothing
     }
   }
 

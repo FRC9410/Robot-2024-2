@@ -20,6 +20,6 @@ public class Utility {
       if (alliance.isPresent()) {
         return alliance.get() == DriverStation.Alliance.Red ? "red" : "blue";
       }
-      return "blue";
+      return "";
     }
 }

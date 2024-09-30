@@ -35,8 +35,8 @@ public class IntakeRollers extends BaseSubsystem {
     intake.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
   }
 
-  public void setVoltage(double velocity, double feedforward) {
-    intake.setControl(voltageVelocity.withVelocity(velocity).withFeedForward(feedforward));
+  public void setVoltage(double velocity) {
+    intake.setControl(voltageVelocity.withVelocity(velocity).withFeedForward(8));
   }
 
   public void setOff() {

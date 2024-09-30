@@ -1,14 +1,17 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Subsystems;
+import frc.robot.subsystems.RobotState.State;
 import frc.robot.commands.base.DefaultDriveCommand;
 import frc.robot.commands.base.DefaultIntakeRollersCommand;
 import frc.robot.commands.base.DefaultIntakeWristCommand;
 import frc.robot.commands.base.DefaultShooterFeederCommand;
 import frc.robot.commands.base.DefaultShooterWheelsCommand;
 import frc.robot.commands.base.DefaultShooterWristCommand;
+import frc.robot.commands.group.DunkingCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -65,7 +68,6 @@ public class RobotContainer {
 
     subsystems.getShooterWrist().setDefaultCommand(
       new DefaultShooterWristCommand(
-        subsystems.getShooterWrist(),
         subsystems.getRobotState()));
 
     subsystems.getShooterWheels().setDefaultCommand(
@@ -80,5 +82,15 @@ public class RobotContainer {
 
   public CommandXboxController getDriverController() {
     return driverController;
+  }
+
+  public void scheduleTriggeredCommand() {
+    switch (subsystems.getRobotState().getState()) {
+      case DUNKING:
+        CommandScheduler.getInstance().schedule(new DunkingCommand(subsystems));
+        break;
+      default:
+        break;
+    }
   }
 }

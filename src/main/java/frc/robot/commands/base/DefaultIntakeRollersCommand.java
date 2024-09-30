@@ -14,7 +14,6 @@ public class DefaultIntakeRollersCommand extends Command {
   private IntakeRollers intakeRollers;
   private RobotState robotState;
   private State state;
-  private Timer timer = new Timer();
 
   public DefaultIntakeRollersCommand(IntakeRollers intakeRollers, RobotState robotState) {
     this.intakeRollers = intakeRollers;
@@ -29,37 +28,18 @@ public class DefaultIntakeRollersCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (robotState.getState().equals(State.DEMO_MODE)) {
+    state = robotState.getState();
+
+    if (state.equals(State.DEMO_MODE)) {
       // do nothing
-    } else if (robotState.getState().equals(State.DEV_MODE)) {
+    } else if (state.equals(State.DEV_MODE)) {
       // do nothing
-    } else if (robotState.getState() == State.INTAKING) {
-      state = robotState.getState();
+    } else if (state.equals(State.INTAKING)) {
       intakeRollers.setTorque(0, 0);
-    } else if (robotState.getState() == State.SHOOTING) {
-      state = robotState.getState();
-      intakeRollers.setVoltage(0, 0); 
-    } else if (robotState.getState() == State.DUNKING) {
-      state = robotState.getState();
-      intakeRollers.setVoltage(0, 0);
-    } else if (robotState.getState() != State.DUNKING
-        && state == State.DUNKING) {
-      state = robotState.getState();
-      intakeRollers.setOff();
+    } else if (state.equals(State.SHOOTING)) {
+      intakeRollers.setVoltage(0); 
     } else {
-      if ((robotState.getState() != State.INTAKING
-        && state == State.INTAKING)
-        || (robotState.getState() != State.SHOOTING
-        && state == State.SHOOTING)) {
-        state = robotState.getState();
-        timer.start();
-      }
-      
-      if (timer.get() > 0.5) {
       intakeRollers.setOff();
-        timer.stop();
-        timer.reset();
-      }
     }
   }
 
