@@ -19,7 +19,7 @@ public class IntakeRollersCommand extends Command {
 
   @Override
   public void initialize() {
-    intakeRollers.setVoltage(speed);
+    intakeRollers.setVoltage(speed, 8);
   }
 
   @Override

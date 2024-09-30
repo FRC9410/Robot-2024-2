@@ -5,13 +5,13 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RobotState;
-import frc.robot.subsystems.RobotState.State;
+import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.StateMachine.State;
 
 public class DefaultShooterWristCommand extends Command {
   private State state;
 
-  public DefaultShooterWristCommand(RobotState robotState) {
+  public DefaultShooterWristCommand(StateMachine robotState) {
     this.state = robotState.getState();
   }
 

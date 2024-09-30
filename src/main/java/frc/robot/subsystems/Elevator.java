@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.ControlledSubsystem;
@@ -23,9 +24,11 @@ public class Elevator extends ControlledSubsystem {
   private RelativeEncoder encoder = primaryElevator.getEncoder();
   private double setpoint = 0;
 
+  private final BiConsumer<String, Object> updateData;
+
 
   /** Creates a new Elevator. */
-  public Elevator() {
+  public Elevator(BiConsumer<String, Object> updateData) {
     this.primaryElevator.restoreFactoryDefaults();
     this.secondaryElevator.restoreFactoryDefaults();
     this.secondaryElevator.follow(primaryElevator, true);
@@ -44,6 +47,8 @@ public class Elevator extends ControlledSubsystem {
     pidController.setSmartMotionMaxAccel(SubsystemConstants.Elevator.maxAcc, 0);
     pidController.setSmartMotionMaxVelocity(SubsystemConstants.Elevator.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(SubsystemConstants.Elevator.allowedError, 0);
+    
+    this.updateData = updateData;
 
     createSubsystemTable("Elevator");
     addSparkMax(List.of(primaryElevator, secondaryElevator));

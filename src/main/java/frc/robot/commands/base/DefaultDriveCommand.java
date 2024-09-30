@@ -14,8 +14,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DriveMode;
-import frc.robot.subsystems.RobotState.State;
-import frc.robot.subsystems.RobotState;
+import frc.robot.subsystems.StateMachine.State;
+import frc.robot.subsystems.StateMachine;
 
 import frc.team9410.lib.Utility;
 
@@ -24,10 +24,10 @@ import java.util.List;
 public class DefaultDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
   CommandXboxController controller;
-  RobotState robotState;
+  StateMachine robotState;
   Command followPathCommand;
 
-  public DefaultDriveCommand(CommandSwerveDrivetrain drivetrain, CommandXboxController controller, RobotState robotState) {
+  public DefaultDriveCommand(CommandSwerveDrivetrain drivetrain, CommandXboxController controller, StateMachine robotState) {
     this.drivetrain = drivetrain;
     this.controller = controller;
     this.robotState = robotState;
@@ -39,11 +39,11 @@ public class DefaultDriveCommand extends Command {
     if (robotState.getState().equals(State.DEMO_MODE) || robotState.getState().equals(State.DUNKING)) {
       // do nothing
     } else if (robotState.getIsFollowingPath()
-      && robotState.getTargetX() > 0
-      && robotState.getTargetY() > 0) {
+      && robotState.getCommandData("targetX") != null
+      && robotState.getCommandData("targetY") != null) {
       followTrajectory();
     }
-    else if (robotState.getTargetRotation().isPresent()){
+    else if (robotState.getCommandData("targetRotation") != null){
       if (followPathCommand != null) {
         followPathCommand.cancel();
       }
@@ -51,7 +51,7 @@ public class DefaultDriveCommand extends Command {
       drivetrain.drive(
         robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
-        robotState.getTargetRotation(),
+        (double) robotState.getCommandData("targetRotation"),
         robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
     }
     else {
@@ -68,12 +68,14 @@ public class DefaultDriveCommand extends Command {
   } 
 
   private void followTrajectory() {
-    Rotation2d targetRotation = robotState.getTargetRotation().isPresent()
-    ? robotState.getTargetRotation().get()
-    : Rotation2d.fromDegrees(robotState.getRotation());
+    Rotation2d targetRotation = robotState.getCommandData("targetRotation") != null
+    ? Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))
+    : Rotation2d.fromDegrees((double) robotState.getSubsystemData("rotation"));
     
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-      new Pose2d(robotState.getTargetX(), robotState.getTargetY(), Rotation2d.fromDegrees(90))
+      new Pose2d((double) robotState.getCommandData("targetX"),
+        (double) robotState.getCommandData("targetY"),
+        Rotation2d.fromDegrees(90))
     );
 
     PathPlannerPath path = new PathPlannerPath(

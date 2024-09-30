@@ -11,23 +11,33 @@ import frc.team9410.lib.LimelightHelpers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public class Vision extends SubsystemBase {
     public final String GAME_PIECE_TABLE_NAME = "limelight-game-piece";
     public final String TAG_TABLE_NAME = "limelight-targeting";
 
-    public NetworkTable gamePieceTable = NetworkTableInstance.getDefault().getTable(GAME_PIECE_TABLE_NAME);
-    public NetworkTable tagTable = NetworkTableInstance.getDefault().getTable(TAG_TABLE_NAME);
+    private final NetworkTable gamePieceTable = NetworkTableInstance.getDefault().getTable(GAME_PIECE_TABLE_NAME);
+    private final NetworkTable tagTable = NetworkTableInstance.getDefault().getTable(TAG_TABLE_NAME);
+
+    private final BiConsumer<String, Object> updateData;
 
     /** Creates a new Vision. */
-    public Vision() {
+    public Vision(BiConsumer<String, Object> updateData) {
         gamePieceTable.getEntry("ledMode").setNumber(1);
         tagTable.getEntry("ledMode").setNumber(1);
+        this.updateData = updateData;
     }
 
     @Override
     public void periodic() {
     // This method will be called once per scheduler run
+        updateData.accept("hasGamePieceTarget", hasTarget(VisionType.GAME_PIECE));
+        
+        if (hasTarget(VisionType.GAME_PIECE)) {
+            updateData.accept("gamePieceTx", getTx(VisionType.GAME_PIECE));
+            updateData.accept("gamePieceTy", getTy(VisionType.GAME_PIECE));
+        }
     }
 
     public double getTx(VisionType type) {

@@ -11,6 +11,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import frc.team9410.lib.subsystem.ControlledSubsystem;
 
@@ -25,7 +26,9 @@ public class IntakeWrist extends ControlledSubsystem {
   private final AbsoluteEncoder encoder = primaryWrist.getAbsoluteEncoder(SubsystemConstants.IntakeWrist.kAbsEncType);
   private final double setpoint = SubsystemConstants.IntakeWrist.kMinRotation;
 
-  public IntakeWrist() {
+  private final BiConsumer<String, Object> updateData;
+
+  public IntakeWrist(BiConsumer<String, Object> updateData) {
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.follow(primaryWrist, true);
@@ -45,6 +48,8 @@ public class IntakeWrist extends ControlledSubsystem {
     pidController.setSmartMotionAllowedClosedLoopError(SubsystemConstants.IntakeWrist.allowedError, 0);
 
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+
+    this.updateData = updateData;
 
     createSubsystemTable("Intake Wrist");
     addSparkMax(List.of(primaryWrist, secondaryWrist));

@@ -2,37 +2,38 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.TunerConstants;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /** Add your docs here. */
 public class Subsystems {
+    private Map<String, Object> subsystemData = new HashMap<>();;
     private CommandSwerveDrivetrain drivetrain;
     private Leds leds = new Leds();
     private Music music;
-    private Vision vision = new Vision();
-    private IntakeWrist intakeWrist = new IntakeWrist();
-    private IntakeRollers intakeRollers = new IntakeRollers();
-    private ShooterWrist shooterWrist = new ShooterWrist();
-    private ShooterFeeder shooterFeeder = new ShooterFeeder();
-    private ShooterWheels shooterWheels = new ShooterWheels();
-    private RobotState robotState;
+    private Vision vision = new Vision((key, value) -> updateSubsystemData(key, value));
+    private IntakeWrist intakeWrist = new IntakeWrist((key, value) -> updateSubsystemData(key, value));
+    private IntakeRollers intakeRollers = new IntakeRollers((key, value) -> updateSubsystemData(key, value));
+    private ShooterWrist shooterWrist = new ShooterWrist((key, value) -> updateSubsystemData(key, value));
+    private ShooterFeeder shooterFeeder = new ShooterFeeder((key, value) -> updateSubsystemData(key, value));
+    private ShooterWheels shooterWheels = new ShooterWheels((key, value) -> updateSubsystemData(key, value));
+    private StateMachine stateMachine;
 
     public Subsystems(CommandXboxController controller) {
         this.drivetrain = TunerConstants.DriveTrain;
         this.music = new Music(drivetrain);
-        this.robotState = new RobotState(drivetrain, vision, shooterFeeder, shooterWheels, controller);
+        this.stateMachine = new StateMachine(drivetrain, subsystemData);
     }
 
     public CommandSwerveDrivetrain getDrivetrain() {
         return drivetrain;
     }
 
-    public RobotState getRobotState() {
-        return robotState;
+    public StateMachine getRobotState() {
+        return stateMachine;
     }
 
     public Leds getLeds() {
@@ -65,6 +66,14 @@ public class Subsystems {
 
     public ShooterWheels getShooterWheels() {
         return shooterWheels;
+    }
+
+    public StateMachine getStateMachine() {
+        return stateMachine;
+    }
+
+    public void updateSubsystemData(String key, Object value) {
+        subsystemData.put(key, value);
     }
 
     public void setDisabledIdleMode() {

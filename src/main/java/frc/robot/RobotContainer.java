@@ -1,16 +1,19 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Subsystems;
-import frc.robot.subsystems.RobotState.State;
+import frc.robot.subsystems.StateMachine.State;
 import frc.robot.commands.base.DefaultDriveCommand;
 import frc.robot.commands.base.DefaultIntakeRollersCommand;
 import frc.robot.commands.base.DefaultIntakeWristCommand;
 import frc.robot.commands.base.DefaultShooterFeederCommand;
 import frc.robot.commands.base.DefaultShooterWheelsCommand;
 import frc.robot.commands.base.DefaultShooterWristCommand;
+import frc.robot.commands.base.StateChangeRequestCommand;
 import frc.robot.commands.group.DunkingCommand;
 
 public class RobotContainer {
@@ -31,6 +34,12 @@ public class RobotContainer {
       subsystems.getDrivetrain().resetPose();
       subsystems.getDrivetrain().seedFieldRelative();
     }));
+
+    driverController.leftTrigger(0.5).whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.INTAKING));
+    driverController.rightTrigger(0.5).whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.SHOOTING_READY));
+    driverController.rightBumper().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.DUNKING_READY));
+    driverController.povLeft().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.CLIMBING_LEFT_READY));
+    driverController.povRight().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.CLIMBING_RIGHT_READY));
   }
   
   private void configureCopilotBindings() {

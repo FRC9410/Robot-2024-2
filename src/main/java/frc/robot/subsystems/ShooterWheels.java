@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -22,14 +24,19 @@ public class ShooterWheels extends BaseSubsystem {
   final private VelocityVoltage primaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   final private NeutralOut brake = new NeutralOut();
 
-  public ShooterWheels() {
+  private final BiConsumer<String, Object> updateData;
+
+  public ShooterWheels(BiConsumer<String, Object> updateData) {
     setConfigs(primaryWheel);
     setConfigs(secondaryWheel);
+    this.updateData = updateData;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateData.accept("Primary Wheel Velocity", primaryWheel.getVelocity().getValueAsDouble());
+    updateData.accept("Secondary Wheel Velocity", secondaryWheel.getVelocity().getValueAsDouble());
   }
 
   public void setVelocity(double velocity) {

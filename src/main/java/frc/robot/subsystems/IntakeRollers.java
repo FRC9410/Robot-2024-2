@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -22,8 +24,11 @@ public class IntakeRollers extends BaseSubsystem {
   private final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
   private final NeutralOut brake = new NeutralOut();
 
-  public IntakeRollers() {
+  private final BiConsumer<String, Object> updateData;
+
+  public IntakeRollers(BiConsumer<String, Object> updateData) {
     setConfigs(intake);
+    this.updateData = updateData;
   }
 
   @Override
@@ -35,8 +40,8 @@ public class IntakeRollers extends BaseSubsystem {
     intake.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
   }
 
-  public void setVoltage(double velocity) {
-    intake.setControl(voltageVelocity.withVelocity(velocity).withFeedForward(8));
+  public void setVoltage(double velocity, double feedforward) {
+    intake.setControl(voltageVelocity.withVelocity(velocity).withFeedForward(feedforward));
   }
 
   public void setOff() {

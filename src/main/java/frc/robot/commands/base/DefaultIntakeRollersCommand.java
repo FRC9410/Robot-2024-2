@@ -4,18 +4,16 @@
 
 package frc.robot.commands.base;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeRollers;
-import frc.robot.subsystems.RobotState;
-import frc.robot.subsystems.RobotState.State;
+import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.StateMachine.State;
 
 public class DefaultIntakeRollersCommand extends Command {
   private IntakeRollers intakeRollers;
-  private RobotState robotState;
-  private State state;
+  private StateMachine robotState;
 
-  public DefaultIntakeRollersCommand(IntakeRollers intakeRollers, RobotState robotState) {
+  public DefaultIntakeRollersCommand(IntakeRollers intakeRollers, StateMachine robotState) {
     this.intakeRollers = intakeRollers;
     this.robotState = robotState;
     addRequirements(intakeRollers);
@@ -28,16 +26,15 @@ public class DefaultIntakeRollersCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    state = robotState.getState();
-
-    if (state.equals(State.DEMO_MODE)) {
-      // do nothing
-    } else if (state.equals(State.DEV_MODE)) {
-      // do nothing
-    } else if (state.equals(State.INTAKING)) {
-      intakeRollers.setTorque(0, 0);
-    } else if (state.equals(State.SHOOTING)) {
-      intakeRollers.setVoltage(0); 
+    if (robotState.getCommandData("intakeRollerVelocity") != null
+        && robotState.getCommandData("intakeRollerFeedForward") != null) {
+      if (robotState.getState().equals(State.INTAKING)) {
+        intakeRollers.setTorque((double) robotState.getCommandData("intakeRollerVelocity"),
+          (double) robotState.getCommandData("intakeRollerFeedForward"));
+      } else {
+        intakeRollers.setVoltage((double) robotState.getCommandData("intakeRollerVelocity"),
+          (double) robotState.getCommandData("intakeRollerFeedForward")); 
+      }
     } else {
       intakeRollers.setOff();
     }

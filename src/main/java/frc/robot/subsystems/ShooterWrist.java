@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -23,7 +24,9 @@ public class ShooterWrist extends ControlledSubsystem {
   final private RelativeEncoder encoder = primaryWrist.getEncoder();
   private double setpoint = SubsystemConstants.ShooterWrist.kMinRotation;
 
-  public ShooterWrist() {
+  private final BiConsumer<String, Object> updateData;
+
+  public ShooterWrist(BiConsumer<String, Object> updateData) {
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.follow(primaryWrist, true);
@@ -45,6 +48,8 @@ public class ShooterWrist extends ControlledSubsystem {
     pidController.setSmartMotionAllowedClosedLoopError(SubsystemConstants.ShooterWrist.allowedError, 0);
     
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+
+    this.updateData = updateData;
 
     createSubsystemTable("Shooter Wrist");
     addSparkMax(List.of(primaryWrist, secondaryWrist));

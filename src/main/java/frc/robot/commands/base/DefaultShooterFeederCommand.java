@@ -4,22 +4,17 @@
 
 package frc.robot.commands.base;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterFeeder;
-import frc.robot.states.StateHelpers;
-import frc.robot.subsystems.RobotState;
-import frc.robot.subsystems.RobotState.State;
+import frc.robot.subsystems.StateMachine;
 
 public class DefaultShooterFeederCommand extends Command {
   private ShooterFeeder shooterFeeder;
-  private RobotState robotState;
-  private State state;
+  private StateMachine robotState;
 
-  public DefaultShooterFeederCommand(ShooterFeeder shooterFeeder, RobotState robotState) {
+  public DefaultShooterFeederCommand(ShooterFeeder shooterFeeder, StateMachine robotState) {
     this.shooterFeeder = shooterFeeder;
     this.robotState = robotState;
-    this.state = robotState.getState();
     addRequirements(shooterFeeder);
   }
 
@@ -30,26 +25,8 @@ public class DefaultShooterFeederCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterFeeder.setOff();;
-
-    if (state.equals(State.DEMO_MODE)) {
-      // do nothing
-    } else if (state.equals(State.DEV_MODE)) {
-      // do nothing
-    } else if (state.equals(State.SHOOTING_READY)
-      && !StateHelpers.isWithinRange(
-        robotState.getAllianceColor(),
-        robotState.getLocationX(),
-        robotState.getLocationY(),
-        robotState.getController().getRightTriggerAxis() > 0.5)) {
-      shooterFeeder.setVelocity(30);
-    } else if (state.equals(State.SHOOTING_READY)
-      && StateHelpers.isWithinRange(
-        robotState.getAllianceColor(),
-        robotState.getLocationX(),
-        robotState.getLocationY(),
-        robotState.getController().getRightTriggerAxis() > 0.5)) {
-      shooterFeeder.setVelocity(60);
+    if (robotState.getCommandData("shooterFeederVelocity") != null) {
+      shooterFeeder.setVelocity((double) robotState.getCommandData("shooterFeederVelocity"));
     } else {
       shooterFeeder.setOff();
     }
