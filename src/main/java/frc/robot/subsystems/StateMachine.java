@@ -82,10 +82,12 @@ public class StateMachine extends SubsystemBase {
     updateSubsystemData("locationY", pose.getY());
     updateSubsystemData("rotation", pose.getRotation().getDegrees());
 
-    for (StateHandler handler : stateHandlers) {
-      if (handler.matches(state)) {
-        handler.execute(this);
-        break;
+    if (!commandExecuting) {
+      for (StateHandler handler : stateHandlers) {
+        if (handler.matches(state)) {
+          handler.execute(this);
+          break;
+        }
       }
     }
   }
@@ -107,9 +109,9 @@ public class StateMachine extends SubsystemBase {
   }
 
   public void removeMultipleKeys(List<String> keys) {
-      for (String key : keys) {
-          Object removedValue = subsystemData.remove(key);
-      }
+    for (String key : keys) {
+      subsystemData.remove(key);
+    }
   }
 
   public Object getCommandData(String key) {
