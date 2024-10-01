@@ -20,6 +20,6 @@ public class ShootingState implements StateHandler {
             "intakeWristSetpoint"));
 
         state.updateCommandData("intakeRollerFeedForward", 8);
-        state.updateCommandData("intakeRollerVelocity", 60);
+        state.updateCommandData("intakeRollerVelocity", 85);
     }
 }

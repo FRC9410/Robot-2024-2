@@ -27,7 +27,6 @@ public class ShooterWristCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooterWrist.setWristAngle(0);
   }
 
   @Override
