@@ -64,7 +64,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.SysIdSwerveTranslation TranslationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveRotation RotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
     private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
-    private Optional<Rotation2d> targetRotation = Optional.empty();
     
     /* Use one of these sysidroutines for your particular test */
     private SysIdRoutine SysIdRoutineTranslation = new SysIdRoutine(
@@ -126,7 +125,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(
         SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     this(driveTrainConstants, 0, modules);
-    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
     // configurePathPlanner();
     }
 
@@ -143,7 +141,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         double velocityYMetersPerSecond,
         double rotationRateRadiansPerSecond,
         DriveMode mode) {
-        this.targetRotation = Optional.empty();
 
         switch (mode) {
             case ROBOT_RELATIVE:
@@ -161,31 +158,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         .withVelocityX(-velocityXMetersPerSecond)
                         .withVelocityY(-velocityYMetersPerSecond)
                         .withRotationalRate(-rotationRateRadiansPerSecond));
-            break;
-        }
-    }
-
-    public void drive(
-        double velocityXMetersPerSecond,
-        double velocityYMetersPerSecond,
-        Optional<Rotation2d> rotationOverride,
-        DriveMode mode) {
-        this.targetRotation = rotationOverride;
-
-        switch (mode) {
-            case ROBOT_RELATIVE:
-            applyRequest(
-                () ->
-                    robotRelative
-                        .withVelocityX(-velocityXMetersPerSecond)
-                        .withVelocityY(-velocityYMetersPerSecond));
-            break;
-            case FIELD_RELATIVE:
-            applyRequest(
-                () ->
-                    fieldRelative
-                        .withVelocityX(-velocityXMetersPerSecond)
-                        .withVelocityY(-velocityYMetersPerSecond));
             break;
         }
     }
@@ -268,10 +240,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public ChassisSpeeds getChassisSpeeds() {
         ChassisSpeeds chassisSpeeds = getKinematics().toChassisSpeeds(getModuleStates());
         return chassisSpeeds;
-    }
-    
-    public Optional<Rotation2d> getRotationTargetOverride(){
-        return targetRotation;
     }
 
     private void configurePathPlanner() {

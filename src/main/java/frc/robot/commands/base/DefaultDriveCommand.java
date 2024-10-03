@@ -1,8 +1,12 @@
 package frc.robot.commands.base;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -12,6 +16,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DriveMode;
 import frc.robot.subsystems.StateMachine.State;
@@ -27,10 +32,15 @@ public class DefaultDriveCommand extends Command {
   StateMachine robotState;
   Command followPathCommand;
 
+  private HolonomicDriveController holonomicController;
+
   public DefaultDriveCommand(CommandSwerveDrivetrain drivetrain, CommandXboxController controller, StateMachine robotState) {
     this.drivetrain = drivetrain;
     this.controller = controller;
     this.robotState = robotState;
+    this.holonomicController = new HolonomicDriveController(new PIDController(1, 0, 0), new PIDController(1.0, 0, 0),
+        new ProfiledPIDController(9.0, 0, 0,
+            new TrapezoidProfile.Constraints(TunerConstants.kSpeedAt12VoltsMps, 3.8)));
     addRequirements(drivetrain);
   }
 
@@ -51,7 +61,7 @@ public class DefaultDriveCommand extends Command {
       drivetrain.drive(
         robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
-        (double) robotState.getCommandData("targetRotation"),
+        getRPS(Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))),
         robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
     }
     else {
@@ -94,5 +104,17 @@ public class DefaultDriveCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
+  }
+
+  public double getRPS(Rotation2d setpoint) {
+    // Increase kP based on horizontal velocity to reduce lag
+    double vy = drivetrain.getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
+    double kp = DriveConstants.rotationKP;
+    kp *= Math.max(1, vy * 1.5);
+    holonomicController.getThetaController().setP(kp);
+
+
+    return holonomicController.calculate(drivetrain.getPose(),
+        drivetrain.getPose(), 0.0, setpoint).omegaRadiansPerSecond;
   }
 }
