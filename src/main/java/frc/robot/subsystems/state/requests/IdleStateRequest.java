@@ -10,6 +10,6 @@ public class IdleStateRequest implements StateRequestHandler {
     }
     
     public void execute(StateMachine state) {
-        state.setState(State.IDLE);
+        state.setState(State.INTAKING);
     }
 }

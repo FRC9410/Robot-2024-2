@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.TunerConstants;
 
@@ -12,8 +13,8 @@ import java.util.Map;
 public class Subsystems {
     private Map<String, Object> subsystemData = new HashMap<>();;
     private CommandSwerveDrivetrain drivetrain;
-    private Leds leds = new Leds();
-    private Music music;
+    // private Leds leds = new Leds();
+    // private Music music;
     private Vision vision = new Vision((key, value) -> updateSubsystemData(key, value));
     private IntakeWrist intakeWrist = new IntakeWrist((key, value) -> updateSubsystemData(key, value));
     private IntakeRollers intakeRollers = new IntakeRollers((key, value) -> updateSubsystemData(key, value));
@@ -24,8 +25,8 @@ public class Subsystems {
 
     public Subsystems(CommandXboxController controller) {
         this.drivetrain = TunerConstants.DriveTrain;
-        this.music = new Music(drivetrain);
-        this.stateMachine = new StateMachine(drivetrain, subsystemData);
+        // this.music = new Music(drivetrain);
+        this.stateMachine = new StateMachine(drivetrain, vision, subsystemData);
     }
 
     public CommandSwerveDrivetrain getDrivetrain() {
@@ -36,13 +37,13 @@ public class Subsystems {
         return stateMachine;
     }
 
-    public Leds getLeds() {
-        return leds;
-    }
+    // public Leds getLeds() {
+    //     return leds;
+    // }
 
-    public Music getMusic() {
-        return music;
-    }
+    // public Music getMusic() {
+    //     return music;
+    // }
 
     public Vision getVision() {
         return vision;
@@ -87,13 +88,22 @@ public class Subsystems {
     public void updatePosition() {
         Map<String, Object> poseWitTimeEstimate = vision.getPoseEstimate(drivetrain.getPose().getRotation().getDegrees());
         if (poseWitTimeEstimate != null) {
-            Pose2d pose = (Pose2d) poseWitTimeEstimate.get("pose");
+            Pose2d pose;
+            if(poseWitTimeEstimate.get("2dpose") != null) {
+                pose = (Pose2d) poseWitTimeEstimate.get("2dpose");
+            } else {
+                Pose3d pose3d = (Pose3d) poseWitTimeEstimate.get("3dpose");
+                pose =  pose3d.toPose2d();
+            }
             drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
             drivetrain.addVisionMeasurement(
                 pose,
                 (double) poseWitTimeEstimate.get("timestamp")
             );
-            drivetrain.seedFieldRelative(pose);
+            if (!vision.isYawSet()) {
+                drivetrain.seedFieldRelative(pose);
+                vision.setYaw();
+            }
         }
     }
 }

@@ -5,14 +5,18 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ShooterWrist;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.StateMachine.State;
 
 public class DefaultShooterWristCommand extends Command {
   private State state;
+  private ShooterWrist shooterWrist;
 
-  public DefaultShooterWristCommand(StateMachine robotState) {
+  public DefaultShooterWristCommand(ShooterWrist shooterWrist, StateMachine robotState) {
     this.state = robotState.getState();
+    this.shooterWrist = shooterWrist;
+    addRequirements(shooterWrist);
   }
 
   // Called when the command is initially scheduled.

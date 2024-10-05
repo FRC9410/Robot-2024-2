@@ -46,35 +46,35 @@ public class DefaultDriveCommand extends Command {
 
   @Override
   public void execute() {
-    if (robotState.getState().equals(State.DEMO_MODE) || robotState.getState().equals(State.DUNKING)) {
-      // do nothing
-    } else if (robotState.getIsFollowingPath()
-      && robotState.getCommandData("targetX") != null
-      && robotState.getCommandData("targetY") != null) {
-      followTrajectory();
-    }
-    else if (robotState.getCommandData("targetRotation") != null){
-      if (followPathCommand != null) {
-        followPathCommand.cancel();
-      }
+    // if (robotState.getState().equals(State.DEMO_MODE) || robotState.getState().equals(State.DUNKING)) {
+    //   // do nothing
+    // } else if (robotState.getIsFollowingPath()
+    //   && robotState.getCommandData("targetX") != null
+    //   && robotState.getCommandData("targetY") != null) {
+    //   followTrajectory();
+    // }
+    // else if (robotState.getCommandData("targetRotation") != null){
+    //   if (followPathCommand != null) {
+    //     followPathCommand.cancel();
+    //   }
 
-      drivetrain.drive(
-        robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
-        getRPS(Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))),
-        robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
-    }
-    else {
-      if (followPathCommand != null) {
-        followPathCommand.cancel();
-      }
+    //   drivetrain.drive(
+    //     robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
+    //     Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
+    //     getRPS(Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))),
+    //     robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
+    // }
+    // else {
+    //   if (followPathCommand != null) {
+    //     followPathCommand.cancel();
+    //   }
       
       drivetrain.drive(
         Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxSpeed,
         DriveMode.FIELD_RELATIVE);
-    }
+    // }
   } 
 
   private void followTrajectory() {

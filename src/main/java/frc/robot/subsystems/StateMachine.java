@@ -4,6 +4,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.state.states.*;
+import frc.robot.subsystems.Vision.VisionType;
 import frc.robot.subsystems.state.requests.*;
 import frc.team9410.lib.StateHandler;
 import frc.team9410.lib.StateRequestHandler;
@@ -18,8 +19,10 @@ import java.util.Map;
 public class StateMachine extends SubsystemBase {
 
   private final CommandSwerveDrivetrain drivetrain;
+  private final Vision vision;
   Map<String, Object> subsystemData;
   Map<String, Object> commandData = new HashMap<>();
+  public boolean hasTarget = false;
 
   private final LaserCan intakeLaser = new LaserCan(13);
 
@@ -57,9 +60,10 @@ public class StateMachine extends SubsystemBase {
     new IdleState()
   );
 
-  public StateMachine(CommandSwerveDrivetrain drivetrain, Map<String, Object> subsystemData) {
+  public StateMachine(CommandSwerveDrivetrain drivetrain, Vision vision, Map<String, Object> subsystemData) {
     this.drivetrain = drivetrain;
     this.subsystemData = subsystemData;
+    this.vision = vision;
 
     try {
       intakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
@@ -73,9 +77,12 @@ public class StateMachine extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (allianceColor.isEmpty() || allianceColor == null) {
+    if (allianceColor == null || allianceColor.isEmpty()) {
       allianceColor = Utility.getAllianceColor();
     }
+
+    System.out.println(vision.hasTarget(VisionType.GAME_PIECE));
+    this.hasTarget = vision.hasTarget(VisionType.GAME_PIECE);
 
     Pose2d pose = drivetrain.getPose();
     updateSubsystemData("locationX", pose.getX());

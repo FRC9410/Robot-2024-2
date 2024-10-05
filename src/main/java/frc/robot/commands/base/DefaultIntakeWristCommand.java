@@ -28,7 +28,7 @@ public class DefaultIntakeWristCommand extends Command {
     if (robotState.getCommandData("intakeWristSetpoint") != null) {
       intakeWrist.setAngle((double) robotState.getCommandData("intakeWristSetpoint"));
     } else {
-      intakeWrist.setAngle(0);
+      intakeWrist.setAngle(0.12);
     }
   }
 

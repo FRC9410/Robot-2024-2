@@ -77,6 +77,7 @@ public class RobotContainer {
 
     subsystems.getShooterWrist().setDefaultCommand(
       new DefaultShooterWristCommand(
+        subsystems.getShooterWrist(),
         subsystems.getRobotState()));
 
     subsystems.getShooterWheels().setDefaultCommand(

@@ -305,7 +305,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public enum DriveMode {
-    ROBOT_RELATIVE, FIELD_RELATIVE
+        ROBOT_RELATIVE, FIELD_RELATIVE
     }
 
     /*

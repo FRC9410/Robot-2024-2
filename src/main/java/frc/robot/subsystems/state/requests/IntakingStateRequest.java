@@ -10,7 +10,9 @@ public class IntakingStateRequest implements StateRequestHandler {
     public boolean matches(StateMachine state, State request) {
         return request.equals(State.INTAKING)
         && state.getDebouncer().calculate(!IntakeHelpers.hasGamePiece(state.getIntakeLaser().getMeasurement().distance_mm))
-        && state.getDebouncer().calculate((boolean) state.getSubsystemData("hasGamePieceTarget"));
+        && state.hasTarget;
+        // && state.getSubsystemData("hasGamePieceTarget") != null
+        // && state.getDebouncer().calculate((boolean) state.getSubsystemData("hasGamePieceTarget"));
     }
     
     public void execute(StateMachine state) {

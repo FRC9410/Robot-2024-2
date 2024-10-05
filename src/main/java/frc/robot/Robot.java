@@ -21,7 +21,8 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
     dashboard = new Dashboard();
     dashboard.loadDashboard(robotContainer.getSubsystems());
-    robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG, 0);
+    robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_LEFT, 0);
+    robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_RIGHT, 0);
     FollowPathCommand.warmupCommand().schedule();
   }
 
@@ -47,8 +48,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG, 0);
-    autonomousCommand = new WaitCommand(0.010).andThen(dashboard.getAutonomousCommand());
+    robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_LEFT, 0);
+    robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_RIGHT, 0);
+    // autonomousCommand = new WaitCommand(0.010).andThen(dashboard.getAutonomousCommand());
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
