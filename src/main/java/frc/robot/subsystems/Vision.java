@@ -102,7 +102,7 @@ public class Vision extends SubsystemBase {
         } else {
             LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestCamera);
             Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(bestCamera);
-            if (limelightMeasurement.avgTagArea > 0.2) {
+            if (limelightMeasurement != null && limelightMeasurement.avgTagArea > 0.2) {
                 Map<String, Object> result = new HashMap<>();
                 result.put("3dpose", pose);
                 result.put("timestamp", limelightMeasurement.timestampSeconds);

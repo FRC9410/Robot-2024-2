@@ -2,9 +2,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.state.states.*;
-import frc.robot.subsystems.Vision.VisionType;
 import frc.robot.subsystems.state.requests.*;
 import frc.team9410.lib.StateHandler;
 import frc.team9410.lib.StateRequestHandler;
@@ -19,10 +20,8 @@ import java.util.Map;
 public class StateMachine extends SubsystemBase {
 
   private final CommandSwerveDrivetrain drivetrain;
-  private final Vision vision;
   Map<String, Object> subsystemData;
   Map<String, Object> commandData = new HashMap<>();
-  public boolean hasTarget = false;
 
   private final LaserCan intakeLaser = new LaserCan(13);
 
@@ -33,6 +32,8 @@ public class StateMachine extends SubsystemBase {
 
   private boolean isFollowingPath = false;
   private boolean commandExecuting = false;
+  private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private NetworkTable dashboardTable = inst.getTable("Dashboard");
   
   private final List<StateRequestHandler> requestHandlers = List.of(
     new DemoModeStateRequest(),
@@ -60,10 +61,9 @@ public class StateMachine extends SubsystemBase {
     new IdleState()
   );
 
-  public StateMachine(CommandSwerveDrivetrain drivetrain, Vision vision, Map<String, Object> subsystemData) {
+  public StateMachine(CommandSwerveDrivetrain drivetrain, Map<String, Object> subsystemData) {
     this.drivetrain = drivetrain;
     this.subsystemData = subsystemData;
-    this.vision = vision;
 
     try {
       intakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
@@ -81,9 +81,6 @@ public class StateMachine extends SubsystemBase {
       allianceColor = Utility.getAllianceColor();
     }
 
-    System.out.println(vision.hasTarget(VisionType.GAME_PIECE));
-    this.hasTarget = vision.hasTarget(VisionType.GAME_PIECE);
-
     Pose2d pose = drivetrain.getPose();
     updateSubsystemData("locationX", pose.getX());
     updateSubsystemData("locationY", pose.getY());
@@ -97,6 +94,9 @@ public class StateMachine extends SubsystemBase {
         }
       }
     }
+
+    logMap(subsystemData, "Subsystem Data");
+    logMap(commandData, "Command Data");
   }
 
   public State getState() {
@@ -148,7 +148,9 @@ public class StateMachine extends SubsystemBase {
           return (Integer) value;
       } else if (value instanceof Double) {
           return (Double) value;
-      } else {
+      } else if (value instanceof Boolean) {
+          return (Boolean) value;
+      }else {
           return null; // Handle cases where the value is not of expected type
       }
   }
@@ -178,6 +180,21 @@ public class StateMachine extends SubsystemBase {
       if (handler.matches(this, requestedState)) {
         handler.execute(this);
         break;
+      }
+    }
+  }
+
+  public void logMap(Map<String, Object> map, String tableName) {
+    NetworkTable table = inst.getTable(tableName);
+    for (Map.Entry<String, Object> entry : map.entrySet()) {
+      if (entry.getValue() instanceof Double) {
+        table.getEntry(entry.getKey()).setDouble((Double) entry.getValue());
+      } else if (entry.getValue() instanceof Integer) {
+        table.getEntry(entry.getKey()).setNumber((Integer) entry.getValue());
+      } else if (entry.getValue() instanceof Boolean) {
+        table.getEntry(entry.getKey()).setBoolean((Boolean) entry.getValue());
+      } else {
+      table.getEntry(entry.getKey()).setString(entry.getValue().toString());
       }
     }
   }

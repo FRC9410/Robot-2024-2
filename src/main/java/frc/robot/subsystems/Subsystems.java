@@ -26,7 +26,7 @@ public class Subsystems {
     public Subsystems(CommandXboxController controller) {
         this.drivetrain = TunerConstants.DriveTrain;
         // this.music = new Music(drivetrain);
-        this.stateMachine = new StateMachine(drivetrain, vision, subsystemData);
+        this.stateMachine = new StateMachine(drivetrain, subsystemData);
     }
 
     public CommandSwerveDrivetrain getDrivetrain() {
