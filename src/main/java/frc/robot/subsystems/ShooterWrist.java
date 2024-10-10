@@ -15,9 +15,10 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.SubsystemConstants;
+import frc.team9410.lib.subsystem.BaseSubsystem;
 import frc.team9410.lib.subsystem.ControlledSubsystem;
 
-public class ShooterWrist extends ControlledSubsystem {
+public class ShooterWrist extends BaseSubsystem {
   final private CANSparkMax primaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kPrimaryWristCanId, MotorType.kBrushless);
   final private CANSparkMax secondaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
   final private SparkPIDController pidController = primaryWrist.getPIDController();
@@ -51,9 +52,9 @@ public class ShooterWrist extends ControlledSubsystem {
 
     this.updateData = updateData;
 
-    createSubsystemTable("Shooter Wrist");
-    addSparkMax(List.of(primaryWrist, secondaryWrist));
-    addRelativePIDController(pidController, encoder, setpoint);
+    // createSubsystemTable("Shooter Wrist");
+    // addSparkMax(List.of(primaryWrist, secondaryWrist));
+    // addRelativePIDController(pidController, encoder, setpoint);
   }
 
   @Override

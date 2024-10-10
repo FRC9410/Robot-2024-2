@@ -11,15 +11,21 @@ public class ShootingStateRequest implements StateRequestHandler {
     public boolean matches(StateMachine state, State request) {
         return request.equals(State.SHOOTING_READY)
         && state.getDebouncer().calculate(IntakeHelpers.hasGamePiece(state.getIntakeLaser().getMeasurement().distance_mm))
-        && PositionHelpers.isWithinSpeakerRange(
-            state.getAllianceColor(),
-            (double) state.getSubsystemData("locationX"),
-            (double) state.getSubsystemData("locationY"))
-        && state.getDebouncer().calculate(ShooterHelpers.shooterIsReady(
-            (double) state.getSubsystemData("primaryWheelVelocity"),
-            (double) state.getSubsystemData("secondaryWheelVelocity"),
-            (double) state.getSubsystemData("feederVelocity")
-        ));
+        // && PositionHelpers.isWithinSpeakerRange(
+        //     state.getAllianceColor(),
+        //     (double) state.getSubsystemData("locationX"),
+        //     (double) state.getSubsystemData("locationY"))
+        && ShooterHelpers.shooterIsReady(
+            state.getSubsystemData("primaryWheelVelocity") != null
+            ? (double) state.getSubsystemData("primaryWheelVelocity")
+            : 0.0,
+            state.getSubsystemData("secondaryWheelVelocity") != null
+            ? (double) state.getSubsystemData("secondaryWheelVelocity")
+            : 0.0,
+            state.getSubsystemData("feederVelocity") != null
+            ? (double) state.getSubsystemData("feederVelocity")
+            : 0.0
+        );
     }
     
     public void execute(StateMachine state) {

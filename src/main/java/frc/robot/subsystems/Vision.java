@@ -43,6 +43,9 @@ public class Vision extends SubsystemBase {
         if (hasTarget(VisionType.GAME_PIECE)) {
             updateData.accept("gamePieceTx", getTx(VisionType.GAME_PIECE));
             updateData.accept("gamePieceTy", getTy(VisionType.GAME_PIECE));
+        } else {
+            updateData.accept("gamePieceTx", 100.0);
+            updateData.accept("gamePieceTy", 100.0);
         }
     }
 

@@ -13,11 +13,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import frc.team9410.lib.subsystem.BaseSubsystem;
 import frc.team9410.lib.subsystem.ControlledSubsystem;
 
 import frc.robot.Constants.SubsystemConstants;
 
-public class IntakeWrist extends ControlledSubsystem {
+public class IntakeWrist extends BaseSubsystem {
 
 
   private final CANSparkMax primaryWrist = new CANSparkMax(SubsystemConstants.IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
@@ -51,9 +52,9 @@ public class IntakeWrist extends ControlledSubsystem {
 
     this.updateData = updateData;
 
-    createSubsystemTable("Intake Wrist");
-    addSparkMax(List.of(primaryWrist, secondaryWrist));
-    addAbosultePIDController(pidController, encoder, setpoint);
+    // createSubsystemTable("Intake Wrist");
+    // addSparkMax(List.of(primaryWrist, secondaryWrist));
+    // addAbosultePIDController(pidController, encoder, setpoint);
   }
 
   @Override

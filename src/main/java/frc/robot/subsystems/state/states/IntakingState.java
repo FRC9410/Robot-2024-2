@@ -13,8 +13,12 @@ public class IntakingState implements StateHandler {
     }
     
     public void execute(StateMachine state) {
-        double gamePieceTx = (double) state.getSubsystemData("gamePieceTx");
-        double gamePieceTy = (double) state.getSubsystemData("gamePieceTy");
+        double gamePieceTx = state.getSubsystemData("gamePieceTx") != null
+        ? (double) state.getSubsystemData("gamePieceTx")
+        : 100.0;
+        double gamePieceTy = state.getSubsystemData("gamePieceTy") != null
+        ? (double) state.getSubsystemData("gamePieceTy")
+        : 100.0;
         double rotation = (double) state.getSubsystemData("rotation");
 
         state.removeMultipleKeys(List.of(
@@ -23,8 +27,9 @@ public class IntakingState implements StateHandler {
         state.updateCommandData("targetRotation", rotation - gamePieceTx);
 
         if (gamePieceTy > -16 && gamePieceTy < 0) {
-            state.updateCommandData("intakeRollerVelocity", -85);
-            state.updateCommandData("intakeRollerFeedForward", -6);
+
+            state.updateCommandData("intakeRollerVelocity", -85.0);
+            state.updateCommandData("intakeRollerFeedForward", -6.0);
             state.updateCommandData("intakeWristSetpoint", 0.64);
         } else {
             state.removeMultipleKeys(List.of(

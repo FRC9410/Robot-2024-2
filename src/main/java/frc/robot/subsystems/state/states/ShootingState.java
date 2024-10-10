@@ -19,7 +19,7 @@ public class ShootingState implements StateHandler {
             "targetRotation",
             "intakeWristSetpoint"));
 
-        state.updateCommandData("intakeRollerFeedForward", 8);
-        state.updateCommandData("intakeRollerVelocity", 85);
+        state.updateCommandData("intakeRollerFeedForward", 8.0);
+        state.updateCommandData("intakeRollerVelocity", 85.0);
     }
 }

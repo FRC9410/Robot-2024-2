@@ -25,7 +25,9 @@ public class DefaultIntakeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+      // System.out.println(robotState.commandData);
     if (robotState.getCommandData("intakeWristSetpoint") != null) {
+      System.out.println("intaking");
       intakeWrist.setAngle((double) robotState.getCommandData("intakeWristSetpoint"));
     } else {
       intakeWrist.setAngle(0.12);

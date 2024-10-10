@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -17,7 +19,7 @@ import java.util.function.BiConsumer;
 import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.ControlledSubsystem;
 
-public class Elevator extends ControlledSubsystem {
+public class Elevator extends SubsystemBase {
   private final CANSparkMax primaryElevator = new CANSparkMax(SubsystemConstants.Elevator.kPrimaryElevatorCanId, MotorType.kBrushless);
   private final CANSparkMax secondaryElevator = new CANSparkMax(SubsystemConstants.Elevator.kSecondaryElevatorCanId, MotorType.kBrushless);
   private final SparkPIDController pidController = primaryElevator.getPIDController();
@@ -50,9 +52,9 @@ public class Elevator extends ControlledSubsystem {
     
     this.updateData = updateData;
 
-    createSubsystemTable("Elevator");
-    addSparkMax(List.of(primaryElevator, secondaryElevator));
-    addRelativePIDController(pidController, encoder, setpoint);
+    // createSubsystemTable("Elevator");
+    // addSparkMax(List.of(primaryElevator, secondaryElevator));
+    // addRelativePIDController(pidController, encoder, setpoint);
   }
 
   @Override

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.TunerConstants;
 
@@ -101,7 +102,10 @@ public class Subsystems {
                 (double) poseWitTimeEstimate.get("timestamp")
             );
             if (!vision.isYawSet()) {
-                drivetrain.seedFieldRelative(pose);
+                Pose2d newPose = stateMachine.getAllianceColor() == "Red"
+                ? pose.rotateBy(Rotation2d.fromDegrees(180))
+                : pose;
+                drivetrain.seedFieldRelative(newPose);
                 vision.setYaw();
             }
         }

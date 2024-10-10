@@ -22,5 +22,11 @@ public class IdleState implements StateHandler {
               "intakeWristSetpoint",
               "shooterFeederVelocity",
               "shooterWheelsVelocity"));
+            state.removeMultipleCommandKeys(List.of(
+              "intakeRollerVelocity",
+              "intakeRollerFeedForward",
+              "intakeWristSetpoint",
+              "shooterFeederVelocity",
+              "shooterWheelsVelocity"));
     }
 }

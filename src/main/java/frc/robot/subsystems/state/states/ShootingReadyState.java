@@ -39,11 +39,11 @@ public class ShootingReadyState implements StateHandler {
         state.updateCommandData("targetY", shootingDestination.get("y"));
 
         if (isWithinRange) {
-            state.updateCommandData("shooterFeederVelocity", -45);
-            state.updateCommandData("shooterWheelsVelocity", 70);
+            state.updateCommandData("shooterFeederVelocity", -45.0);
+            state.updateCommandData("shooterWheelsVelocity", 70.0);
         } else {
-            state.updateCommandData("shooterFeederVelocity", -25);
-            state.updateCommandData("shooterWheelsVelocity", 40);
+            state.updateCommandData("shooterFeederVelocity", -25.0);
+            state.updateCommandData("shooterWheelsVelocity", 40.0);
         }
     }
 }
