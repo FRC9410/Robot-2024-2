@@ -21,6 +21,24 @@
       "/SmartDashboard/Auto Chooser": "String Chooser"
     }
   },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "retained": {
+      "Dashboard": {
+        "open": true
+      }
+    },
+    "transitory": {
+      "Dashboard": {
+        "open": true
+      },
+      "Subsystem Data": {
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
     "Clients": {
       "open": true
@@ -29,6 +47,15 @@
       "open": true
     },
     "Server": {
+      "open": true
+    },
+    "shuffleboard@1": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
       "open": true
     },
     "visible": true

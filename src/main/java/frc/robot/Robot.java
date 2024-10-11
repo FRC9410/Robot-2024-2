@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +26,9 @@ public class Robot extends TimedRobot {
     robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_LEFT, 0);
     robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_RIGHT, 0);
     FollowPathCommand.warmupCommand().schedule();
+    if (RobotBase.isSimulation()) {
+    NetworkTableInstance.getDefault().startServer();
+    }
   }
 
   @Override
