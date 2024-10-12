@@ -13,16 +13,10 @@ public class IdleState implements StateHandler {
     }
     
     public void execute(StateMachine state) {
-            state.removeMultipleKeys(List.of(
+            state.removeMultipleCommandKeys(List.of(
               "targetX",
               "targetY",
               "targetRotation",
-              "intakeRollerVelocity",
-              "intakeRollerFeedForward",
-              "intakeWristSetpoint",
-              "shooterFeederVelocity",
-              "shooterWheelsVelocity"));
-            state.removeMultipleCommandKeys(List.of(
               "intakeRollerVelocity",
               "intakeRollerFeedForward",
               "intakeWristSetpoint",

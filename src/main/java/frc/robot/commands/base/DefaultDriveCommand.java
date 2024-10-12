@@ -39,7 +39,7 @@ public class DefaultDriveCommand extends Command {
     this.controller = controller;
     this.robotState = robotState;
     this.holonomicController = new HolonomicDriveController(new PIDController(1, 0, 0), new PIDController(1.0, 0, 0),
-        new ProfiledPIDController(9.0, 0, 0,
+        new ProfiledPIDController(9.0, 0, 0.03,
             new TrapezoidProfile.Constraints(TunerConstants.kSpeedAt12VoltsMps, 3.8)));
     addRequirements(drivetrain);
   }
@@ -58,13 +58,26 @@ public class DefaultDriveCommand extends Command {
       //   followPathCommand.cancel();
       // }
 
+      double rotation = (double) robotState.getSubsystemData("rotation");
+      double rotationDiff;
+
+      if (rotation > 0.0) {
+        rotationDiff =  rotation - 180;
+      } else {
+        rotationDiff =  rotation + 180;
+      }
+
+      double rps = getRpsDistance(rotationDiff);
+      
+
       drivetrain.drive(
-        robotState.getState() == State.INTAKING ? 0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
+        // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
-        getRPS(Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))),
+        rps,
         robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
     }
-    // else {
+    else {
     //   if (followPathCommand != null) {
     //     followPathCommand.cancel();
     //   }
@@ -116,5 +129,14 @@ public class DefaultDriveCommand extends Command {
 
     return holonomicController.calculate(drivetrain.getPose(),
         drivetrain.getPose(), 0.0, setpoint).omegaRadiansPerSecond;
+  }
+
+  public double getRpsDistance(double distance) {
+    // Increase kP based on horizontal velocity to reduce lag
+    double vy = drivetrain.getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
+    double kp = DriveConstants.rotationKP;
+    // kp *= vy * 1.5;
+
+    return distance * kp;
   }
 }

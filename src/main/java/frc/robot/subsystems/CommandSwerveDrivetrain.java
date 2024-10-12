@@ -2,18 +2,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -24,19 +12,28 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.TunerConstants;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -242,6 +239,44 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return chassisSpeeds;
     }
 
+    public double getTargetLockRotation(double tx, double offset) {
+        // Increase kP based on horizontal velocity to reduce lag
+        double vy = getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
+        double kp = DriveConstants.rotationKP;
+        kp *= Math.max(1, vy * 1.5);
+        rotationPidController.setP(kp);
+
+        double rotation = rotationPidController.calculate(tx + offset, 0);
+        return rotation;
+    }
+
+    public double getRotationLockRotation(double error, double offset) {
+        // Increase kP based on horizontal velocity to reduce lag
+        double offsetError = error + offset;
+        if(offsetError > 180) {
+            offsetError -= 360;
+        }
+        double vy = getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
+        double kp = DriveConstants.rotationKP;
+        kp *= Math.max(1, vy * 1.5);
+        rotationPidController.setP(kp);
+
+        double rotation = rotationPidController.calculate(offsetError, 0);
+        return rotation;
+    }
+
+    public double getTargetLockForward(double ty, double offset) {
+        double forward = -forwardPidController.calculate(0, ty + offset);
+        double output = forward + Math.copySign(DriveConstants.targetLockKFF, forward);
+        return output;
+    }
+
+    public double getTargetLockStrafe(double tx, double offset) {
+        double strafe = -strafePidController.calculate(0, tx + offset);
+        double output = strafe + Math.copySign(DriveConstants.targetLockKFF, strafe);
+        return output;
+    }
+
     private void configurePathPlanner() {
         double driveBaseRadius = 0.41309;
         for (var moduleLocation : m_moduleLocations) {
@@ -305,7 +340,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public enum DriveMode {
-        ROBOT_RELATIVE, FIELD_RELATIVE
+    ROBOT_RELATIVE, FIELD_RELATIVE
     }
 
     /*

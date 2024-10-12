@@ -9,13 +9,8 @@ import frc.team9410.lib.StateRequestHandler;
 
 public class ShootingStateRequest implements StateRequestHandler {
     public boolean matches(StateMachine state, State request) {
-        return request.equals(State.SHOOTING_READY)
-        && state.getDebouncer().calculate(IntakeHelpers.hasGamePiece(state.getIntakeLaser().getMeasurement().distance_mm))
-        // && PositionHelpers.isWithinSpeakerRange(
-        //     state.getAllianceColor(),
-        //     (double) state.getSubsystemData("locationX"),
-        //     (double) state.getSubsystemData("locationY"))
-        && ShooterHelpers.shooterIsReady(
+        boolean shooterIsReady = false;
+        if (ShooterHelpers.shooterIsReady(
             state.getSubsystemData("primaryWheelVelocity") != null
             ? (double) state.getSubsystemData("primaryWheelVelocity")
             : 0.0,
@@ -25,7 +20,12 @@ public class ShootingStateRequest implements StateRequestHandler {
             state.getSubsystemData("feederVelocity") != null
             ? (double) state.getSubsystemData("feederVelocity")
             : 0.0
-        );
+        )) {
+            shooterIsReady = true;
+        }
+        return request.equals(State.SHOOTING_READY)
+        && IntakeHelpers.hasGamePiece(state.getIntakeLaser().getMeasurement().distance_mm)
+        && shooterIsReady;
     }
     
     public void execute(StateMachine state) {

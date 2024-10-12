@@ -40,29 +40,6 @@ public class StateChangeRequestCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (requestedState.equals(State.INTAKING) && IntakeHelpers.hasGamePiece(stateMachine.getIntakeLaser().getMeasurement().distance_mm)
-      || (requestedState.equals(State.SHOOTING_READY)
-        && (PositionHelpers.isInZone(stateMachine.getAllianceColor(), (double) stateMachine.getSubsystemData("locationX"))
-          || !IntakeHelpers.hasGamePiece(stateMachine.getIntakeLaser().getMeasurement().distance_mm)))
-      || (requestedState.equals(State.DUNKING_READY)
-        && (PositionHelpers.isInZone(stateMachine.getAllianceColor(), (double) stateMachine.getSubsystemData("locationX"))
-          || !IntakeHelpers.hasGamePiece(stateMachine.getIntakeLaser().getMeasurement().distance_mm)))
-      || (requestedState.equals(State.SHOOTING)
-        && (!IntakeHelpers.hasGamePiece(stateMachine.getIntakeLaser().getMeasurement().distance_mm)
-          || ShooterHelpers.shooterIsReady(
-            stateMachine.getSubsystemData("primaryWheelVelocity") != null
-            ? (double) stateMachine.getSubsystemData("primaryWheelVelocity")
-            : 0.0,
-            stateMachine.getSubsystemData("secondaryWheelVelocity") != null
-            ? (double) stateMachine.getSubsystemData("secondaryWheelVelocity")
-            : 0.0,
-            stateMachine.getSubsystemData("feederVelocity") != null
-            ? (double) stateMachine.getSubsystemData("feederVelocity")
-            : 0.0
-          )
-        )) ) {
-      return true;
-    }
     return false;
   }
 }

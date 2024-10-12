@@ -2,6 +2,7 @@ package frc.robot.subsystems.state.requests;
 
 import frc.robot.subsystems.StateMachine.State;
 import frc.robot.subsystems.state.helpers.PositionHelpers;
+import frc.robot.subsystems.state.helpers.ShooterHelpers;
 import frc.robot.subsystems.state.helpers.IntakeHelpers;
 
 import frc.robot.subsystems.StateMachine;

@@ -6,6 +6,7 @@ import frc.robot.subsystems.state.helpers.PositionHelpers;
 import java.util.List;
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.StateMachine;
 import frc.team9410.lib.StateHandler;
 
@@ -28,17 +29,17 @@ public class ShootingReadyState implements StateHandler {
         boolean isWithinRange = PositionHelpers.isWithinSpeakerRange(state.getAllianceColor(), locationX, locationY);
 
         state.updateCommandData("targetRotation",
-            PositionHelpers.getShootingAngle(
+            new Rotation2d(PositionHelpers.getShootingAngle(
                     state.getAllianceColor(),
                     locationX,
-                    locationY));
+                    locationY)).getDegrees());
 
         Map<String, Double> shootingDestination = PositionHelpers.getSpeakerDestination(
             state.getAllianceColor(), locationX, locationY);
         state.updateCommandData("targetX", shootingDestination.get("x"));
         state.updateCommandData("targetY", shootingDestination.get("y"));
 
-        if (isWithinRange) {
+        if (false && isWithinRange) {
             state.updateCommandData("shooterFeederVelocity", -45.0);
             state.updateCommandData("shooterWheelsVelocity", 70.0);
         } else {

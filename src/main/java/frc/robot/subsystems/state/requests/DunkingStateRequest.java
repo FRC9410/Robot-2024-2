@@ -9,7 +9,7 @@ import frc.team9410.lib.StateRequestHandler;
 public class DunkingStateRequest implements StateRequestHandler {
     public boolean matches(StateMachine state, State request) {
         return request.equals(State.DUNKING_READY)
-        && state.getDebouncer().calculate(IntakeHelpers.hasGamePiece(state.getIntakeLaser().getMeasurement().distance_mm))
+        && IntakeHelpers.hasGamePiece(state.getIntakeLaser().getMeasurement().distance_mm)
         && PositionHelpers.isWithinAmpRange(
           state.getAllianceColor(),
           (double) state.getSubsystemData("locationX"),

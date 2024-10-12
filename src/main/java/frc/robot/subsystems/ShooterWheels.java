@@ -35,8 +35,8 @@ public class ShooterWheels extends BaseSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateData.accept("Primary Wheel Velocity", primaryWheel.getVelocity().getValueAsDouble());
-    updateData.accept("Secondary Wheel Velocity", secondaryWheel.getVelocity().getValueAsDouble());
+    updateData.accept("primaryWheelVelocity", primaryWheel.getVelocity().getValueAsDouble());
+    updateData.accept("secondaryWheelVelocity", secondaryWheel.getVelocity().getValueAsDouble());
   }
 
   public void setVelocity(double velocity) {

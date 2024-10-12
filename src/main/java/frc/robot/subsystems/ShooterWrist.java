@@ -34,7 +34,7 @@ public class ShooterWrist extends BaseSubsystem {
     this.primaryWrist.setIdleMode(IdleMode.kBrake);
     this.secondaryWrist.setIdleMode(IdleMode.kBrake);
 
-    this.encoder.setPosition(-0.2);
+    this.encoder.setPosition(-0.4);
     this.pidController.setFeedbackDevice(encoder);
 
     this.pidController.setP(SubsystemConstants.ShooterWrist.kP);

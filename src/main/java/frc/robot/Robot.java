@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -36,6 +37,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     robotContainer.getSubsystems().updatePosition();
     dashboard.updateDashboard(robotContainer.getSubsystems());
+    SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
+    SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
   } 
 
   @Override

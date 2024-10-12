@@ -86,6 +86,7 @@ public class StateMachine extends SubsystemBase {
     updateSubsystemData("locationY", pose.getY());
     updateSubsystemData("rotation", pose.getRotation().getDegrees());
     updateSubsystemData("state", state);
+    updateSubsystemData("laserDistance", getIntakeLaser().getMeasurement().distance_mm);
 
     if (!commandExecuting) {
       for (StateHandler handler : stateHandlers) {

@@ -80,7 +80,7 @@ public final class Constants
     public static final double strafekI = 0.0;
     public static final double strafekD = 0.0;
     
-    public static final double rotationKP = 0.11;
+    public static final double rotationKP = 0.09;
     public static final double rotationkI = 0.0;
     public static final double rotationkD = 0.0;
 
@@ -188,7 +188,7 @@ public final class Constants
     public static final double blueStageX = 4.4;
     public static final double redStageX = centerLine * 2 - blueStageX;
 
-    public static final double shooterRange = 3.5;
+    public static final double shooterRange = 2.0;
     public static final double ampRange = 0.1;
   }
 

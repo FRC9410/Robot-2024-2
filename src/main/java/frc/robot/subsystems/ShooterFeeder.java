@@ -31,7 +31,7 @@ public class ShooterFeeder extends BaseSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateData.accept("Feeder Velocity", feeder.getVelocity().getValueAsDouble());
+    updateData.accept("feederVelocity", feeder.getVelocity().getValueAsDouble());
   }
 
   public void setOff() {

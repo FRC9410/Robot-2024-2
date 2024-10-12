@@ -26,7 +26,7 @@ public class IntakingState implements StateHandler {
           "targetY"));
         state.updateCommandData("targetRotation", rotation - gamePieceTx);
 
-        if (gamePieceTy > -16 && gamePieceTy < 0) {
+        if (gamePieceTy > -16.0 && gamePieceTy < 6.0) {
 
             state.updateCommandData("intakeRollerVelocity", -85.0);
             state.updateCommandData("intakeRollerFeedForward", -6.0);
