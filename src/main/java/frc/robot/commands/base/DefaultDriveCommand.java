@@ -48,12 +48,12 @@ public class DefaultDriveCommand extends Command {
   public void execute() {
     // if (robotState.getState().equals(State.DEMO_MODE) || robotState.getState().equals(State.DUNKING)) {
     //   // do nothing
-    // } else if (robotState.getIsFollowingPath()
-    //   && robotState.getCommandData("targetX") != null
-    //   && robotState.getCommandData("targetY") != null) {
-    //   followTrajectory();
-    // }
-    if (robotState.getCommandData("targetRotation") != null
+    // } else
+    if (controller.a().getAsBoolean()
+      && robotState.getCommandData("targetX") != null
+      && robotState.getCommandData("targetY") != null) {
+      followTrajectory();
+    } else if (robotState.getCommandData("targetRotation") != null
       && (robotState.getState().equals(State.SHOOTING_READY) || robotState.getState().equals(State.SHOOTING))) {
       // if (followPathCommand != null) {
       //   followPathCommand.cancel();
@@ -79,24 +79,22 @@ public class DefaultDriveCommand extends Command {
         DriveMode.FIELD_RELATIVE);
     } else if (robotState.getCommandData("targetRotation") != null
       && robotState.getState().equals(State.INTAKING)) {
-      // if (followPathCommand != null) {
-      //   followPathCommand.cancel();
-      // }
+      if (followPathCommand != null) {
+        followPathCommand.cancel();
+      }
 
       double targetRotation = (double) robotState.getCommandData("targetRotation");
       double rps = getRpsDistance(-targetRotation);
 
       drivetrain.drive(
-        // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        -0.5 * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
         rps,
-        // robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
-        DriveMode.FIELD_RELATIVE);
+        DriveMode.ROBOT_RELATIVE);
     } else {
-    //   if (followPathCommand != null) {
-    //     followPathCommand.cancel();
-    //   }
+      if (followPathCommand != null) {
+        followPathCommand.cancel();
+      }
       
       drivetrain.drive(
         Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
@@ -107,23 +105,25 @@ public class DefaultDriveCommand extends Command {
   } 
 
   private void followTrajectory() {
-    Rotation2d targetRotation = robotState.getCommandData("targetRotation") != null
-    ? Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))
-    : Rotation2d.fromDegrees((double) robotState.getSubsystemData("rotation"));
-    
-    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-      new Pose2d((double) robotState.getCommandData("targetX"),
-        (double) robotState.getCommandData("targetY"),
-        Rotation2d.fromDegrees(90))
-    );
+    if (!followPathCommand.isScheduled()) {
+      Rotation2d targetRotation = robotState.getCommandData("targetRotation") != null
+      ? Rotation2d.fromDegrees((double) robotState.getCommandData("targetRotation"))
+      : Rotation2d.fromDegrees((double) robotState.getSubsystemData("rotation"));
+      
+      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+        new Pose2d((double) robotState.getCommandData("targetX"),
+          (double) robotState.getCommandData("targetY"),
+          Rotation2d.fromDegrees(90))
+      );
 
-    PathPlannerPath path = new PathPlannerPath(
-          bezierPoints,
-          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
-          new GoalEndState(0.0, targetRotation)
-    );
-    
-    followPathCommand = AutoBuilder.followPath(path);
+      PathPlannerPath path = new PathPlannerPath(
+            bezierPoints,
+            new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
+            new GoalEndState(0.0, targetRotation)
+      );
+      
+      followPathCommand = AutoBuilder.followPath(path);
+    }
   }
 
   @Override
