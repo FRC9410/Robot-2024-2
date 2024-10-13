@@ -69,4 +69,8 @@ public class IntakeRollers extends BaseSubsystem {
   public void setDisabledIdleMode() {
     intake.setNeutralMode(NeutralModeValue.Coast);
   }
+
+  public double getRollerPowerDraw() {
+    return this.intake.getSupplyCurrent().getValueAsDouble();
+  }
 }

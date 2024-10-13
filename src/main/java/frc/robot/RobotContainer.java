@@ -13,8 +13,11 @@ import frc.robot.commands.base.DefaultIntakeWristCommand;
 import frc.robot.commands.base.DefaultShooterFeederCommand;
 import frc.robot.commands.base.DefaultShooterWheelsCommand;
 import frc.robot.commands.base.DefaultShooterWristCommand;
+import frc.robot.commands.base.ElevatorCommand;
 import frc.robot.commands.base.StateChangeRequestCommand;
+import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.DunkingCommand;
+import frc.robot.commands.group.EjectNoteCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -43,6 +46,10 @@ public class RobotContainer {
   }
   
   private void configureCopilotBindings() {
+    copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntakeRollers(), -10, -6,100));
+    copilotController.b().onTrue(new EjectNoteCommand(subsystems));
+    copilotController.rightTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
+    copilotController.leftTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
     
     /* Bindings for drivetrain characterization */
     /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */

@@ -22,6 +22,7 @@ public class Subsystems {
     private ShooterWrist shooterWrist = new ShooterWrist((key, value) -> updateSubsystemData(key, value));
     private ShooterFeeder shooterFeeder = new ShooterFeeder((key, value) -> updateSubsystemData(key, value));
     private ShooterWheels shooterWheels = new ShooterWheels((key, value) -> updateSubsystemData(key, value));
+    private Elevator elevator = new Elevator((key, value) -> updateSubsystemData(key, value));
     private StateMachine stateMachine;
 
     public Subsystems(CommandXboxController controller) {
@@ -68,6 +69,10 @@ public class Subsystems {
 
     public ShooterWheels getShooterWheels() {
         return shooterWheels;
+    }
+
+    public Elevator getElevator() {
+        return elevator;
     }
 
     public StateMachine getStateMachine() {

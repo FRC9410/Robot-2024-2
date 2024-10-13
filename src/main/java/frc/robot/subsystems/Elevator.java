@@ -59,6 +59,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    updateData.accept("elevatorPosition", getPosition());
   }
 
   public void setElevatorPosition(double position) {
