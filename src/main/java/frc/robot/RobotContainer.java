@@ -1,10 +1,6 @@
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Subsystems;
@@ -20,6 +16,7 @@ import frc.robot.commands.base.StateChangeRequestCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.DunkingCommand;
 import frc.robot.commands.group.EjectNoteCommand;
+import frc.robot.commands.group.ScoreTrapCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -57,6 +54,7 @@ public class RobotContainer {
     copilotController.y().onTrue(new DunkingCommand(subsystems));
     copilotController.rightTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
     copilotController.leftTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
+    copilotController.rightBumper().onTrue(new ScoreTrapCommand(subsystems));
     
     /* Bindings for drivetrain characterization */
     /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
