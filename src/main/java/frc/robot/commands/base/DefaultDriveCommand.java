@@ -53,7 +53,7 @@ public class DefaultDriveCommand extends Command {
     //   && robotState.getCommandData("targetY") != null) {
     //   followTrajectory();
     // }
-    if (robotState.getCommandData("targetRotation") != null){
+    if (robotState.getCommandData("targetRotation") != null && !robotState.getState().equals(State.INTAKING)){
       // if (followPathCommand != null) {
       //   followPathCommand.cancel();
       // }
