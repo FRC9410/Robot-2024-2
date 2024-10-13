@@ -20,8 +20,6 @@ import frc.robot.commands.base.StateChangeRequestCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.DunkingCommand;
 import frc.robot.commands.group.EjectNoteCommand;
-import frc.robot.commands.group.IntakeNoteCommand;
-import frc.robot.commands.group.TimedShootNoteCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);

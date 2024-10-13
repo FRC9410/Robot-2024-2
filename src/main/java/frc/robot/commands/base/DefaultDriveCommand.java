@@ -53,7 +53,8 @@ public class DefaultDriveCommand extends Command {
     //   && robotState.getCommandData("targetY") != null) {
     //   followTrajectory();
     // }
-    if (robotState.getCommandData("targetRotation") != null){
+    if (robotState.getCommandData("targetRotation") != null
+      && (robotState.getState().equals(State.SHOOTING_READY) || robotState.getState().equals(State.SHOOTING))) {
       // if (followPathCommand != null) {
       //   followPathCommand.cancel();
       // }
@@ -63,13 +64,27 @@ public class DefaultDriveCommand extends Command {
       double rotationDiff;
 
       if (rotation > 0.0) {
-        rotationDiff =  rotation - 180;
+        rotationDiff =  rotation - 180 + targetRotation;
       } else {
-        rotationDiff =  rotation + 180;
+        rotationDiff =  rotation + 180 - targetRotation;
       }
 
       double rps = getRpsDistance(rotationDiff);
       
+
+      drivetrain.drive(
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        rps,
+        DriveMode.FIELD_RELATIVE);
+    } else if (robotState.getCommandData("targetRotation") != null
+      && robotState.getState().equals(State.INTAKING)) {
+      // if (followPathCommand != null) {
+      //   followPathCommand.cancel();
+      // }
+
+      double targetRotation = (double) robotState.getCommandData("targetRotation");
+      double rps = getRpsDistance(-targetRotation);
 
       drivetrain.drive(
         // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
@@ -78,8 +93,7 @@ public class DefaultDriveCommand extends Command {
         rps,
         // robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
         DriveMode.FIELD_RELATIVE);
-    }
-    else {
+    } else {
     //   if (followPathCommand != null) {
     //     followPathCommand.cancel();
     //   }
