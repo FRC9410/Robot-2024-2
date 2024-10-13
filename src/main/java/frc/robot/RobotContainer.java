@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -18,6 +20,8 @@ import frc.robot.commands.base.StateChangeRequestCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.DunkingCommand;
 import frc.robot.commands.group.EjectNoteCommand;
+import frc.robot.commands.group.IntakeNoteCommand;
+import frc.robot.commands.group.TimedShootNoteCommand;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -38,6 +42,10 @@ public class RobotContainer {
       subsystems.getDrivetrain().seedFieldRelative();
     }));
 
+    driverController.back().onTrue(subsystems.getVision().runOnce(() -> {
+      subsystems.getVision().setYaw(false);
+    }));
+
     driverController.leftTrigger(0.5).whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.INTAKING));
     driverController.rightTrigger(0.5).whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.SHOOTING_READY));
     driverController.rightBumper().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.DUNKING_READY));
@@ -48,6 +56,7 @@ public class RobotContainer {
   private void configureCopilotBindings() {
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntakeRollers(), -10, -6,100));
     copilotController.b().onTrue(new EjectNoteCommand(subsystems));
+    copilotController.y().onTrue(new DunkingCommand(subsystems));
     copilotController.rightTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
     copilotController.leftTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
     

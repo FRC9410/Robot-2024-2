@@ -59,6 +59,7 @@ public class DefaultDriveCommand extends Command {
       // }
 
       double rotation = (double) robotState.getSubsystemData("rotation");
+      double targetRotation = (double) robotState.getCommandData("targetRotation");
       double rotationDiff;
 
       if (rotation > 0.0) {
@@ -72,10 +73,11 @@ public class DefaultDriveCommand extends Command {
 
       drivetrain.drive(
         // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
         rps,
-        robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
+        // robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
+        DriveMode.FIELD_RELATIVE);
     }
     else {
     //   if (followPathCommand != null) {
@@ -83,8 +85,8 @@ public class DefaultDriveCommand extends Command {
     //   }
       
       drivetrain.drive(
-        Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX() * getDirection()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
         Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxSpeed,
         DriveMode.FIELD_RELATIVE);
     }
@@ -108,10 +110,6 @@ public class DefaultDriveCommand extends Command {
     );
     
     followPathCommand = AutoBuilder.followPath(path);
-  }
-
-  private int getDirection() {
-    return robotState.getAllianceColor() == "blue" ? 1 : -1;
   }
 
   @Override

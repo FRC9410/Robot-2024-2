@@ -82,8 +82,8 @@ public class Vision extends SubsystemBase {
         return yawSet;
     }
 
-    public void setYaw(){
-        yawSet = true;
+    public void setYaw(boolean isSet){
+        yawSet = isSet;
     }
 
     public Map<String, Object> getPoseEstimate (double yaw) {

@@ -111,7 +111,7 @@ public class Subsystems {
                 ? pose.rotateBy(Rotation2d.fromDegrees(180))
                 : pose;
                 drivetrain.seedFieldRelative(newPose);
-                vision.setYaw();
+                vision.setYaw(true);
             }
         }
     }

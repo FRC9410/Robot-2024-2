@@ -28,8 +28,7 @@ public class DunkingCommand extends SequentialCommandGroup {
         new ShooterWheelsCommand(subsystems.getShooterWheels(), 60),
         new ShooterFeederCommand(subsystems.getShooterFeeder(), -60)
       ),
-      new ShooterWristCommand(subsystems.getShooterWrist(), 0),
-      new InstCmd(() -> subsystems.getRobotState().setCommandExecuting(false))
+      new ShooterWristCommand(subsystems.getShooterWrist(), 0)
     );
   }
 

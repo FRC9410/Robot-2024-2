@@ -23,12 +23,14 @@ public class Robot extends TimedRobot {
     LiveWindow.disableAllTelemetry();
     robotContainer = new RobotContainer();
     dashboard = new Dashboard();
+    
     dashboard.loadDashboard(robotContainer.getSubsystems());
     robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_LEFT, 0);
     robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_RIGHT, 0);
     FollowPathCommand.warmupCommand().schedule();
+
     if (RobotBase.isSimulation()) {
-    NetworkTableInstance.getDefault().startServer();
+      NetworkTableInstance.getDefault().startServer();
     }
   }
 
@@ -36,9 +38,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     robotContainer.getSubsystems().updatePosition();
-    dashboard.updateDashboard(robotContainer.getSubsystems());
-    SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
-    SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
+    // dashboard.updateDashboard(robotContainer.getSubsystems());
   } 
 
   @Override
@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_LEFT, 0);
     robotContainer.getSubsystems().getVision().setPipeline(VisionType.TAG_RIGHT, 0);
-    // autonomousCommand = new WaitCommand(0.010).andThen(dashboard.getAutonomousCommand());
+    autonomousCommand = new WaitCommand(0.010).andThen(dashboard.getAutonomousCommand());
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();

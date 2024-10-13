@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 2,
-      "y": 7.0
+      "y": 2
     },
     "rotation": 0
   },
@@ -12,9 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Default Path"
+            "name": "TimedShootNoteCommand"
           }
         }
       ]
