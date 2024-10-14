@@ -188,8 +188,10 @@ public final class Constants
     public static final double blueStageX = 4.4;
     public static final double redStageX = centerLine * 2 - blueStageX;
 
-    public static final double shooterRange = 2.0;
+    public static final double shooterRange = 2.2;
     public static final double ampRange = 0.1;
+
+    public static final int[] includedTags = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
   }
 
   public static final class SubsystemConstants {

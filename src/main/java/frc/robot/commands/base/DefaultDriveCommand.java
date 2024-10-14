@@ -58,14 +58,15 @@ public class DefaultDriveCommand extends Command {
       //   followPathCommand.cancel();
       // }
 
+      double allianceRotation = robotState.getAllianceColor() == "red" ? 180 : 0;
       double rotation = (double) robotState.getSubsystemData("rotation");
       double targetRotation = (double) robotState.getCommandData("targetRotation");
       double rotationDiff;
 
       if (rotation > 0.0) {
-        rotationDiff =  rotation - 180;
+        rotationDiff =  rotation - allianceRotation;
       } else {
-        rotationDiff =  rotation + 180;
+        rotationDiff =  rotation + allianceRotation;
       }
 
       double rps = getRpsDistance(rotationDiff);

@@ -94,24 +94,22 @@ public class Subsystems {
     public void updatePosition() {
         Map<String, Object> poseWitTimeEstimate = vision.getPoseEstimate(drivetrain.getPose().getRotation().getDegrees());
         if (poseWitTimeEstimate != null) {
-            Pose2d pose;
-            if(poseWitTimeEstimate.get("2dpose") != null) {
-                pose = (Pose2d) poseWitTimeEstimate.get("2dpose");
-            } else {
-                Pose3d pose3d = (Pose3d) poseWitTimeEstimate.get("3dpose");
-                pose =  pose3d.toPose2d();
+            if (poseWitTimeEstimate.get("2dpose") != null) {
+                Pose2d pose = (Pose2d) poseWitTimeEstimate.get("2dpose");
+                drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+                drivetrain.addVisionMeasurement(
+                    pose,
+                    (double) poseWitTimeEstimate.get("timestamp")
+                );
             }
-            drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-            drivetrain.addVisionMeasurement(
-                pose,
-                (double) poseWitTimeEstimate.get("timestamp")
-            );
-            if (!vision.isYawSet()) {
+
+            if (poseWitTimeEstimate.get("3dpose") != null) {
+                Pose3d pose3d = (Pose3d) poseWitTimeEstimate.get("3dpose");
+                Pose2d pose =  pose3d.toPose2d();
                 Pose2d newPose = stateMachine.getAllianceColor() == "Red"
                 ? pose.rotateBy(Rotation2d.fromDegrees(180))
                 : pose;
                 drivetrain.seedFieldRelative(newPose);
-                vision.setYaw(true);
             }
         }
     }

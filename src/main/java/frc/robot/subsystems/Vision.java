@@ -7,9 +7,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants.FieldConstants;
+import frc.robot.subsystems.Vision.VisionType;
 import frc.team9410.lib.LimelightHelpers;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -87,32 +89,35 @@ public class Vision extends SubsystemBase {
     }
 
     public Map<String, Object> getPoseEstimate (double yaw) {
+        final Map<String, Object> result = new HashMap<>();
         final double leftTa = getTa(VisionType.TAG_LEFT);
+        final boolean leftTagIsIncludedTag = Arrays.stream(FieldConstants.includedTags).anyMatch(tag -> tag == getTagId(VisionType.TAG_LEFT));
         final double rightTa = getTa(VisionType.TAG_RIGHT);
-        final String bestCamera = leftTa > rightTa ? TAG_TABLE_LEFT_NAME : TAG_TABLE_RIGHT_NAME;
-
-        if(yawSet) {
-            LimelightHelpers.SetRobotOrientation(bestCamera, yaw, 0, 0, 0, 0, 0);
-            LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestCamera);
-            if(limelightMeasurement == null || limelightMeasurement.tagCount < 1) {
-                return null;
-            }
-            Pose2d pose = limelightMeasurement.pose;
-                Map<String, Object> result = new HashMap<>();
-                result.put("2dpose", pose);
-                result.put("timestamp", limelightMeasurement.timestampSeconds);
-            return result;
+        final boolean rightTagIsIncludedTag = Arrays.stream(FieldConstants.includedTags).anyMatch(tag -> tag == getTagId(VisionType.TAG_LEFT));
+        final String bestCamera;
+        if (leftTa > rightTa && leftTagIsIncludedTag) {
+            bestCamera = TAG_TABLE_LEFT_NAME;
+        } else if (rightTa > leftTa && rightTagIsIncludedTag) {
+            bestCamera = TAG_TABLE_RIGHT_NAME;
         } else {
-            LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestCamera);
-            Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(bestCamera);
-            if (limelightMeasurement != null && limelightMeasurement.avgTagArea > 0.2) {
-                Map<String, Object> result = new HashMap<>();
-                result.put("3dpose", pose);
-                result.put("timestamp", limelightMeasurement.timestampSeconds);
-                return result;
-            }
             return null;
         }
+
+        LimelightHelpers.SetRobotOrientation(bestCamera, yaw, 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate limelight2dMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestCamera);
+
+        if(limelight2dMeasurement == null || limelight2dMeasurement.tagCount < 1 || limelight2dMeasurement.avgTagArea < 0.2) {
+            return null;
+        }
+
+        Pose2d pose = limelight2dMeasurement.pose;
+        result.put("2dpose", pose);
+        result.put("timestamp", limelight2dMeasurement.timestampSeconds);
+
+        Pose3d pose3d = LimelightHelpers.getBotPose3d_wpiBlue(bestCamera);
+        result.put("3dpose", pose3d);
+
+        return result;
     }
 
     public Optional<Rotation2d> getGamePieceRotation() {
