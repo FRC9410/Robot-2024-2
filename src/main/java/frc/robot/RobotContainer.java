@@ -48,7 +48,9 @@ public class RobotContainer {
 
     driverController.leftTrigger(0.5).whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.INTAKING));
     driverController.rightTrigger(0.5).whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.SHOOTING_READY));
-    driverController.rightBumper().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.DUNKING_READY));
+    // driverController.rightBumper().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.DUNKING_READY));
+    driverController.rightBumper().whileTrue(new TimedShootNoteCommand(subsystems));
+    driverController.leftBumper().whileTrue(new IntakeNoteCommand(subsystems));
     driverController.povLeft().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.CLIMBING_LEFT_READY));
     driverController.povRight().whileTrue(new StateChangeRequestCommand(subsystems.getStateMachine(), State.CLIMBING_RIGHT_READY));
   }

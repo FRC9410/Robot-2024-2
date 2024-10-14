@@ -22,7 +22,7 @@ public class EjectNoteCommand extends ParallelRaceGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeWristCommand(subsystems.getIntakeWrist(), 0.3),
+      new IntakeWristCommand(subsystems.getIntakeWrist(), 0.3, subsystems.getStateMachine().getIntakeLaser()),
       new SequentialCommandGroup(
         new WaitCommand(0.3),
         new ParallelRaceGroup(
