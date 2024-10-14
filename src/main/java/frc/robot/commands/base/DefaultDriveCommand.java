@@ -53,7 +53,7 @@ public class DefaultDriveCommand extends Command {
     //   && robotState.getCommandData("targetY") != null) {
     //   followTrajectory();
     // }
-    if (robotState.getCommandData("targetRotation") != null){
+    if (robotState.getCommandData("targetRotation") != null && robotState.getState().equals(State.SHOOTING_READY)){
       // if (followPathCommand != null) {
       //   followPathCommand.cancel();
       // }
@@ -70,6 +70,23 @@ public class DefaultDriveCommand extends Command {
       }
 
       double rps = getRpsDistance(rotationDiff);
+      
+
+      drivetrain.drive(
+        // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        rps,
+        // robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
+        DriveMode.FIELD_RELATIVE);
+    }
+    else if (robotState.getCommandData("targetRotation") != null && robotState.getState().equals(State.INTAKING)){
+      // if (followPathCommand != null) {
+      //   followPathCommand.cancel();
+      // }
+      double targetRotation = (double) robotState.getCommandData("targetRotation");
+
+      double rps = getRpsDistance(-targetRotation);
       
 
       drivetrain.drive(
