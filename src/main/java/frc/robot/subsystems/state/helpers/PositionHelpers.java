@@ -36,7 +36,7 @@ public class PositionHelpers {
       return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.blueSpeakerX - locationX);
     } else if (allianceColor.equals("red") && locationX > FieldConstants.centerLine) {
       System.out.println(Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.redSpeakerX - locationX));
-      return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.redSpeakerX - locationX);
+      return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.redSpeakerX - locationX) + Math.PI;
     } else {
       return 0;
     }
