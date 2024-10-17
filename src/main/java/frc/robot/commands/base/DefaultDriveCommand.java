@@ -60,6 +60,10 @@ public class DefaultDriveCommand extends Command {
       double targetRotation = (double) robotState.getCommandData("targetRotation");
       double rotationDiff = normalizeAngle(targetRotation - rotation);
       double rps = getRpsDistance(rotationDiff);
+
+      if (Math.abs(rotationDiff) < 2) {
+        rps = 0;
+      }
       
 
       drivetrain.drive(
@@ -142,7 +146,7 @@ public class DefaultDriveCommand extends Command {
     // Increase kP based on horizontal velocity to reduce lag
     double vy = drivetrain.getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
     double kp = DriveConstants.rotationKP;
-    // kp *= vy * 1.5;
+    kp *= Math.max(1, vy * 1.5);
 
     return distance * kp;
   }

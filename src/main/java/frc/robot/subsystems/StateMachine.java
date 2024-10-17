@@ -77,9 +77,7 @@ public class StateMachine extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (allianceColor == null || allianceColor.isEmpty()) {
       allianceColor = Utility.getAllianceColor();
-    }
 
     Pose2d pose = drivetrain.getPose();
     updateSubsystemData("locationX", pose.getX());
