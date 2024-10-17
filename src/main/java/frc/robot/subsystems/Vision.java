@@ -102,22 +102,45 @@ public class Vision extends SubsystemBase {
         } else {
             return null;
         }
-
-        LimelightHelpers.SetRobotOrientation(bestCamera, yaw, 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate limelight2dMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestCamera);
-
-        if(limelight2dMeasurement == null || limelight2dMeasurement.tagCount < 1) {
+        
+        if(yawSet) {
+            LimelightHelpers.SetRobotOrientation(bestCamera, yaw, 0, 0, 0, 0, 0);
+            LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestCamera);
+            if(limelightMeasurement == null || limelightMeasurement.tagCount < 1) {
+                return null;
+            }
+            Pose2d pose = limelightMeasurement.pose;
+                Map<String, Object> result = new HashMap<>();
+                result.put("2dpose", pose);
+                result.put("timestamp", limelightMeasurement.timestampSeconds);
+            return result;
+        } else {
+            LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestCamera);
+            Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(bestCamera);
+            if (limelightMeasurement != null && limelightMeasurement.avgTagArea > 0.2) {
+                Map<String, Object> result = new HashMap<>();
+                result.put("3dpose", pose);
+                result.put("timestamp", limelightMeasurement.timestampSeconds);
+                return result;
+            }
             return null;
         }
 
-        Pose2d pose = limelight2dMeasurement.pose;
-        result.put("2dpose", pose);
-        result.put("timestamp", limelight2dMeasurement.timestampSeconds);
+        // LimelightHelpers.SetRobotOrientation(bestCamera, yaw, 0, 0, 0, 0, 0);
+        // LimelightHelpers.PoseEstimate limelight2dMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestCamera);
 
-        Pose3d pose3d = LimelightHelpers.getBotPose3d_wpiBlue(bestCamera);
-        result.put("3dpose", pose3d);
+        // if(limelight2dMeasurement == null || limelight2dMeasurement.tagCount < 1) {
+        //     return null;
+        // }
 
-        return result;
+        // Pose2d pose = limelight2dMeasurement.pose;
+        // result.put("2dpose", pose);
+        // result.put("timestamp", limelight2dMeasurement.timestampSeconds);
+
+        // Pose3d pose3d = LimelightHelpers.getBotPose3d_wpiBlue(bestCamera);
+        // result.put("3dpose", pose3d);
+
+        // return result;
     }
 
     public Optional<Rotation2d> getGamePieceRotation() {
