@@ -106,7 +106,7 @@ public class Vision extends SubsystemBase {
         LimelightHelpers.SetRobotOrientation(bestCamera, yaw, 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate limelight2dMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestCamera);
 
-        if(limelight2dMeasurement == null || limelight2dMeasurement.tagCount < 1 || limelight2dMeasurement.avgTagArea < 0.2) {
+        if(limelight2dMeasurement == null || limelight2dMeasurement.tagCount < 1) {
             return null;
         }
 

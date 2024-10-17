@@ -24,7 +24,7 @@ public class IntakingState implements StateHandler {
         state.removeMultipleKeys(List.of(
           "targetX",
           "targetY"));
-        state.updateCommandData("targetRotation", rotation - gamePieceTx);
+        state.updateCommandData("targetRotation", gamePieceTx);
 
         if (gamePieceTy > -16.0 && gamePieceTy < 8.0) {
 

@@ -51,6 +51,8 @@ public class DefaultDriveCommand extends Command {
     //   && robotState.getCommandData("targetY") != null) {
     //   followTrajectory();
     // }
+    double direction = robotState.getAllianceColor() == "red" ? -1 : 1;
+
     if (robotState.getCommandData("targetRotation") != null && robotState.getState().equals(State.SHOOTING_READY)){
       // if (followPathCommand != null) {
       //   followPathCommand.cancel();
@@ -59,7 +61,7 @@ public class DefaultDriveCommand extends Command {
       double rotation = (double) robotState.getSubsystemData("rotation");
       double targetRotation = (double) robotState.getCommandData("targetRotation");
       double rotationDiff = normalizeAngle(targetRotation - rotation);
-      double rps = getRpsDistance(rotationDiff);
+      double rps = getRpsDistance(-rotationDiff);
 
       if (Math.abs(rotationDiff) < 2) {
         rps = 0;
@@ -68,8 +70,8 @@ public class DefaultDriveCommand extends Command {
 
       drivetrain.drive(
         // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed * direction,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed * direction,
         rps,
         // robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
         DriveMode.FIELD_RELATIVE);
@@ -79,13 +81,17 @@ public class DefaultDriveCommand extends Command {
       //   followPathCommand.cancel();
       // }
       double targetRotation = (double) robotState.getCommandData("targetRotation");
-      double rps = getRpsDistance(-targetRotation);
+      double rps = getRpsDistance(targetRotation);
+
+      if (Math.abs(targetRotation) < 2) {
+        rps = 0;
+      }
       
 
       drivetrain.drive(
         // -0.5 * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed * direction,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed * direction,
         rps,
         // DriveMode.ROBOT_RELATIVE);
         DriveMode.FIELD_RELATIVE);
@@ -94,10 +100,9 @@ public class DefaultDriveCommand extends Command {
     //   if (followPathCommand != null) {
     //     followPathCommand.cancel();
     //   }
-      
       drivetrain.drive(
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed * direction,
+        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed * direction,
         Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxSpeed,
         DriveMode.FIELD_RELATIVE);
     }
@@ -146,7 +151,7 @@ public class DefaultDriveCommand extends Command {
     // Increase kP based on horizontal velocity to reduce lag
     double vy = drivetrain.getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
     double kp = DriveConstants.rotationKP;
-    kp *= Math.max(1, vy * 1.5);
+    // kp *= Math.max(1, vy * 3);
 
     return distance * kp;
   }
