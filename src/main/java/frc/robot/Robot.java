@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     robotContainer.getSubsystems().updatePosition();
     // dashboard.updateDashboard(robotContainer.getSubsystems());
+    SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
+    SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
   } 
 
   @Override
