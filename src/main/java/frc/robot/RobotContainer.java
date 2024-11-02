@@ -59,8 +59,8 @@ public class RobotContainer {
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntakeRollers(), -10, -6,100));
     copilotController.b().onTrue(new EjectNoteCommand(subsystems));
     copilotController.y().onTrue(new DunkingCommand(subsystems));
-    copilotController.rightTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
-    copilotController.leftTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
+    // copilotController.rightTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
+    // copilotController.leftTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
     
     /* Bindings for drivetrain characterization */
     /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */

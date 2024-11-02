@@ -20,15 +20,15 @@ public class DunkingCommand extends SequentialCommandGroup {
         new ShooterWheelsCommand(subsystems.getShooterWheels(), -40)
       ),
       new ParallelRaceGroup(
-        new ShooterWristCommand(subsystems.getShooterWrist(), 16),
-        new WaitCommand(0.7)
+        new ShooterWristCommand(subsystems.getShooterWrist(), 16, false),
+        new WaitCommand(0.8)
       ),
       new ParallelRaceGroup(
-        new WaitCommand(0.4),
+        new WaitCommand(0.5),
         new ShooterWheelsCommand(subsystems.getShooterWheels(), 60),
-        new ShooterFeederCommand(subsystems.getShooterFeeder(), -60)
-      ),
-      new ShooterWristCommand(subsystems.getShooterWrist(), 0)
+        new ShooterFeederCommand(subsystems.getShooterFeeder(), -60),
+        new ShooterWristCommand(subsystems.getShooterWrist(), 16, true)
+      )
     );
   }
 

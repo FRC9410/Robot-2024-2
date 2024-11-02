@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -27,6 +29,9 @@ public class Elevator extends SubsystemBase {
   private double setpoint = 0;
 
   private final BiConsumer<String, Object> updateData;
+  private NetworkTable dashboardTable;
+  private NetworkTableInstance inst;
+  private NetworkTable subsystemTable;
 
 
   /** Creates a new Elevator. */
@@ -55,11 +60,26 @@ public class Elevator extends SubsystemBase {
     // createSubsystemTable("Elevator");
     // addSparkMax(List.of(primaryElevator, secondaryElevator));
     // addRelativePIDController(pidController, encoder, setpoint);
+    inst = NetworkTableInstance.getDefault();
+    dashboardTable = inst.getTable("Dashboard");
+    subsystemTable = inst.getTable("Elevator");
   }
 
   @Override
   public void periodic() {
     updateData.accept("elevatorPosition", getPosition());
+
+    String deviceName = "CAN ID 41";
+    subsystemTable.getEntry(deviceName + ": Velocity").setDouble(primaryElevator.getEncoder().getVelocity());
+    subsystemTable.getEntry(deviceName + ": Output Current").setDouble(primaryElevator.getOutputCurrent());
+    subsystemTable.getEntry(deviceName + ": Output Voltage").setDouble(primaryElevator.getAppliedOutput());
+    subsystemTable.getEntry(deviceName + ": Motor Temperature").setDouble(primaryElevator.getMotorTemperature());
+
+    String deviceName2 = "CAN ID 42";
+    subsystemTable.getEntry(deviceName2 + ": Velocity").setDouble(secondaryElevator.getEncoder().getVelocity());
+    subsystemTable.getEntry(deviceName2 + ": Output Current").setDouble(secondaryElevator.getOutputCurrent());
+    subsystemTable.getEntry(deviceName2 + ": Output Voltage").setDouble(secondaryElevator.getAppliedOutput());
+    subsystemTable.getEntry(deviceName2 + ": Motor Temperature").setDouble(secondaryElevator.getMotorTemperature());
   }
 
   public void setElevatorPosition(double position) {

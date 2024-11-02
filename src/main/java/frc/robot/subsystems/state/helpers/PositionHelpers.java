@@ -33,7 +33,7 @@ public class PositionHelpers {
 
   public static double getShootingAngle(String allianceColor, double locationX, double locationY) {
     if (allianceColor.equals("blue") && locationX < FieldConstants.centerLine) {
-      return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.blueSpeakerX - locationX);
+      return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.blueSpeakerX - locationX) + Math.PI;
     } else if (allianceColor.equals("red") && locationX > FieldConstants.centerLine) {
       System.out.println(Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.redSpeakerX - locationX));
       return Math.atan2(FieldConstants.speakerY - locationY, FieldConstants.redSpeakerX - locationX) + Math.PI;

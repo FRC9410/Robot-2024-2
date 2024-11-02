@@ -8,6 +8,10 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import java.util.List;
@@ -28,6 +32,9 @@ public class IntakeWrist extends BaseSubsystem {
   private final double setpoint = SubsystemConstants.IntakeWrist.kMinRotation;
 
   private final BiConsumer<String, Object> updateData;
+  private NetworkTable dashboardTable;
+  private NetworkTableInstance inst;
+  private NetworkTable subsystemTable;
 
   public IntakeWrist(BiConsumer<String, Object> updateData) {
     this.primaryWrist.restoreFactoryDefaults();
@@ -55,11 +62,25 @@ public class IntakeWrist extends BaseSubsystem {
     // createSubsystemTable("Intake Wrist");
     // addSparkMax(List.of(primaryWrist, secondaryWrist));
     // addAbosultePIDController(pidController, encoder, setpoint);
+    inst = NetworkTableInstance.getDefault();
+    dashboardTable = inst.getTable("Dashboard");
+    subsystemTable = inst.getTable("IntakeWrist");
   }
 
   @Override
   public void periodic() {
-    super.periodic();
+
+    String deviceName = "CAN ID 11";
+    subsystemTable.getEntry(deviceName + ": Velocity").setDouble(primaryWrist.getEncoder().getVelocity());
+    subsystemTable.getEntry(deviceName + ": Output Current").setDouble(primaryWrist.getOutputCurrent());
+    subsystemTable.getEntry(deviceName + ": Output Voltage").setDouble(primaryWrist.getAppliedOutput());
+    subsystemTable.getEntry(deviceName + ": Motor Temperature").setDouble(primaryWrist.getMotorTemperature());
+
+    String deviceName2 = "CAN ID 12";
+    subsystemTable.getEntry(deviceName2 + ": Velocity").setDouble(secondaryWrist.getEncoder().getVelocity());
+    subsystemTable.getEntry(deviceName2 + ": Output Current").setDouble(secondaryWrist.getOutputCurrent());
+    subsystemTable.getEntry(deviceName2 + ": Output Voltage").setDouble(secondaryWrist.getAppliedOutput());
+    subsystemTable.getEntry(deviceName2 + ": Motor Temperature").setDouble(secondaryWrist.getMotorTemperature());
   }
   
   public void setAngle(double angle) {

@@ -13,6 +13,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SubsystemConstants;
 
@@ -26,14 +28,26 @@ public class IntakeRollers extends BaseSubsystem {
 
   private final BiConsumer<String, Object> updateData;
 
+  private NetworkTable dashboardTable;
+  private NetworkTableInstance inst;
+  private NetworkTable subsystemTable;
+
   public IntakeRollers(BiConsumer<String, Object> updateData) {
     setConfigs(intake);
     this.updateData = updateData;
+    inst = NetworkTableInstance.getDefault();
+    dashboardTable = inst.getTable("Dashboard");
+    subsystemTable = inst.getTable("IntakeRollers");
   }
 
   @Override
   public void periodic() {
-    super.periodic();
+
+    String deviceName = "CAN ID 10";
+    subsystemTable.getEntry(deviceName + ": Velocity").setDouble(intake.getRotorVelocity().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Output Current").setDouble(intake.getStatorCurrent().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Output Voltage").setDouble(intake.getSupplyVoltage().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Motor Temperature").setDouble(intake.getDeviceTemp().getValueAsDouble());
   }
 
   public void setTorque(double velocity, double feedforward) {

@@ -23,6 +23,7 @@ public class IntakeCommand extends Command {
     this.timer = new Timer();
     this.minCurrentDraw = minCurrentDraw;
     this.feedforward = feedforward;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.

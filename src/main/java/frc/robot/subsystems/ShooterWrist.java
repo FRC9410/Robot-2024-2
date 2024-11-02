@@ -8,6 +8,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -20,19 +23,22 @@ import frc.team9410.lib.subsystem.ControlledSubsystem;
 
 public class ShooterWrist extends BaseSubsystem {
   final private CANSparkMax primaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kPrimaryWristCanId, MotorType.kBrushless);
-  final private CANSparkMax secondaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
+  // final private CANSparkMax secondaryWrist = new CANSparkMax(SubsystemConstants.ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
   final private SparkPIDController pidController = primaryWrist.getPIDController();
   final private RelativeEncoder encoder = primaryWrist.getEncoder();
   private double setpoint = SubsystemConstants.ShooterWrist.kMinRotation;
 
   private final BiConsumer<String, Object> updateData;
+  private NetworkTable dashboardTable;
+  private NetworkTableInstance inst;
+  private NetworkTable subsystemTable;
 
   public ShooterWrist(BiConsumer<String, Object> updateData) {
     this.primaryWrist.restoreFactoryDefaults();
-    this.secondaryWrist.restoreFactoryDefaults();
-    this.secondaryWrist.follow(primaryWrist, true);
+    // this.secondaryWrist.restoreFactoryDefaults();
+    // this.secondaryWrist.follow(primaryWrist, true);
     this.primaryWrist.setIdleMode(IdleMode.kBrake);
-    this.secondaryWrist.setIdleMode(IdleMode.kBrake);
+    // this.secondaryWrist.setIdleMode(IdleMode.kBrake);
 
     this.encoder.setPosition(-0.4);
     this.pidController.setFeedbackDevice(encoder);
@@ -55,11 +61,19 @@ public class ShooterWrist extends BaseSubsystem {
     // createSubsystemTable("Shooter Wrist");
     // addSparkMax(List.of(primaryWrist, secondaryWrist));
     // addRelativePIDController(pidController, encoder, setpoint);
+    inst = NetworkTableInstance.getDefault();
+    dashboardTable = inst.getTable("Dashboard");
+    subsystemTable = inst.getTable("ShooterWrist");
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This method will be called once per scheduler run    
+    String deviceName = "CAN ID 31";
+    subsystemTable.getEntry(deviceName + ": Velocity").setDouble(primaryWrist.getEncoder().getVelocity());
+    subsystemTable.getEntry(deviceName + ": Output Current").setDouble(primaryWrist.getOutputCurrent());
+    subsystemTable.getEntry(deviceName + ": Output Voltage").setDouble(primaryWrist.getAppliedOutput());
+    subsystemTable.getEntry(deviceName + ": Motor Temperature").setDouble(primaryWrist.getMotorTemperature());
   }
 
   public void setWristAngle(double angle) {
@@ -68,12 +82,12 @@ public class ShooterWrist extends BaseSubsystem {
 
   public void setEnableIdleMode() {
     primaryWrist.setIdleMode(IdleMode.kBrake);
-    secondaryWrist.setIdleMode(IdleMode.kBrake);
+    // secondaryWrist.setIdleMode(IdleMode.kBrake);
 
   }
 
   public void setDisabledIdleMode() {
     primaryWrist.setIdleMode(IdleMode.kCoast);
-    secondaryWrist.setIdleMode(IdleMode.kCoast);
+    // secondaryWrist.setIdleMode(IdleMode.kCoast);
   }
 }

@@ -1,6 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
     if (RobotBase.isSimulation()) {
       NetworkTableInstance.getDefault().startServer();
     }
+    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320,240,30);
   }
 
   @Override

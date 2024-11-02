@@ -21,6 +21,7 @@ public class IntakeWristCommand extends Command {
     this.intake = intake;
     this.position = position;
     this.intakeLaser = intakeLaser;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.

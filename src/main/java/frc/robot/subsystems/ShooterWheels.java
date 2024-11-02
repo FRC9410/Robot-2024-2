@@ -13,6 +13,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.BaseSubsystem;
@@ -25,11 +27,17 @@ public class ShooterWheels extends BaseSubsystem {
   final private NeutralOut brake = new NeutralOut();
 
   private final BiConsumer<String, Object> updateData;
+  private NetworkTable dashboardTable;
+  private NetworkTableInstance inst;
+  private NetworkTable subsystemTable;
 
   public ShooterWheels(BiConsumer<String, Object> updateData) {
     setConfigs(primaryWheel);
     setConfigs(secondaryWheel);
     this.updateData = updateData;
+    inst = NetworkTableInstance.getDefault();
+    dashboardTable = inst.getTable("Dashboard");
+    subsystemTable = inst.getTable("ShooterWheels");
   }
 
   @Override
@@ -37,6 +45,18 @@ public class ShooterWheels extends BaseSubsystem {
     // This method will be called once per scheduler run
     updateData.accept("primaryWheelVelocity", primaryWheel.getVelocity().getValueAsDouble());
     updateData.accept("secondaryWheelVelocity", secondaryWheel.getVelocity().getValueAsDouble());
+    
+    String deviceName = "CAN ID 21";
+    subsystemTable.getEntry(deviceName + ": Velocity").setDouble(primaryWheel.getRotorVelocity().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Output Current").setDouble(primaryWheel.getStatorCurrent().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Output Voltage").setDouble(primaryWheel.getSupplyVoltage().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Motor Temperature").setDouble(primaryWheel.getDeviceTemp().getValueAsDouble());
+    
+    String deviceName2 = "CAN ID 22";
+    subsystemTable.getEntry(deviceName2 + ": Velocity").setDouble(secondaryWheel.getRotorVelocity().getValueAsDouble());
+    subsystemTable.getEntry(deviceName2 + ": Output Current").setDouble(secondaryWheel.getStatorCurrent().getValueAsDouble());
+    subsystemTable.getEntry(deviceName2 + ": Output Voltage").setDouble(secondaryWheel.getSupplyVoltage().getValueAsDouble());
+    subsystemTable.getEntry(deviceName2 + ": Motor Temperature").setDouble(secondaryWheel.getDeviceTemp().getValueAsDouble());
   }
 
   public void setVelocity(double velocity) {

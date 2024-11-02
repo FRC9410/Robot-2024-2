@@ -89,7 +89,7 @@ public class Vision extends SubsystemBase {
     }
 
     public Map<String, Object> getPoseEstimate (double yaw) {
-        final Map<String, Object> result = new HashMap<>();
+        // final Map<String, Object> result = new HashMap<>();
         final double leftTa = getTa(VisionType.TAG_LEFT);
         final boolean leftTagIsIncludedTag = Arrays.stream(FieldConstants.includedTags).anyMatch(tag -> tag == getTagId(VisionType.TAG_LEFT));
         final double rightTa = getTa(VisionType.TAG_RIGHT);

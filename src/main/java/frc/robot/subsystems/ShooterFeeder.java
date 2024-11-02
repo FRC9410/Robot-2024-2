@@ -12,6 +12,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.team9410.lib.subsystem.BaseSubsystem;
@@ -22,16 +24,29 @@ public class ShooterFeeder extends BaseSubsystem {
   private final NeutralOut brake = new NeutralOut();
 
   private final BiConsumer<String, Object> updateData;
+  private NetworkTable dashboardTable;
+  private NetworkTableInstance inst;
+  private NetworkTable subsystemTable;
 
   public ShooterFeeder(BiConsumer<String, Object> updateData) {
     setConfigs(feeder);
     this.updateData = updateData;
+    inst = NetworkTableInstance.getDefault();
+    dashboardTable = inst.getTable("Dashboard");
+    subsystemTable = inst.getTable("ShooterFeeder");
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateData.accept("feederVelocity", feeder.getVelocity().getValueAsDouble());
+    
+    String deviceName = "CAN ID 20";
+    subsystemTable.getEntry(deviceName + ": Velocity").setDouble(feeder.getRotorVelocity().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Output Current").setDouble(feeder.getStatorCurrent().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Output Voltage").setDouble(feeder.getSupplyVoltage().getValueAsDouble());
+    subsystemTable.getEntry(deviceName + ": Motor Temperature").setDouble(feeder.getDeviceTemp().getValueAsDouble());
+    
   }
 
   public void setOff() {

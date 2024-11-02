@@ -10,10 +10,12 @@ import frc.robot.subsystems.ShooterWrist;
 public class ShooterWristCommand extends Command {
   private ShooterWrist shooterWrist;
   private double angle;
+  private boolean returnPos;
   
-  public ShooterWristCommand(ShooterWrist shooterWrist, double angle) {
+  public ShooterWristCommand(ShooterWrist shooterWrist, double angle, boolean returnPos) {
     this.shooterWrist = shooterWrist;
     this.angle = angle;
+    this.returnPos = returnPos;
     addRequirements(shooterWrist);
   }
 
@@ -27,6 +29,9 @@ public class ShooterWristCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    if (returnPos) {
+      shooterWrist.setWristAngle(0);
+    }
   }
 
   @Override
