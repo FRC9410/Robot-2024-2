@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Subsystems;
+import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.StateMachine.State;
 import frc.robot.commands.base.DefaultDriveCommand;
 import frc.robot.commands.base.DefaultIntakeRollersCommand;
@@ -16,7 +17,7 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController copilotController = new CommandXboxController(1);
   private Subsystems subsystems = new Subsystems(driverController);
-  // private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
+  private final Telemetry logger = new Telemetry(5.24);
 
   public RobotContainer() {
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
@@ -52,6 +53,7 @@ public class RobotContainer {
     copilotController.back().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kReverse));
     copilotController.start().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kForward));
     copilotController.start().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kReverse));
+    subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
   }
 
   private void configureDefaultBindings() {

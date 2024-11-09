@@ -95,7 +95,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                     this));
 
     /* Change this to the sysid routine you want to test */
-    private final SysIdRoutine RoutineToApply = SysIdRoutineRotation;
+    private final SysIdRoutine RoutineToApply = SysIdRoutineTranslation;
 
     // Comment out below requests for CUBE_BOT
     private final SwerveRequest.FieldCentric fieldRelative =
@@ -287,7 +287,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this::seedFieldRelative,  // Consumer for seeding pose against auto
             this::getChassisSpeeds,
             (speeds)->this.setControl(AutoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
-            new HolonomicPathFollowerConfig(new PIDConstants(3, 0, 0),
+            new HolonomicPathFollowerConfig(new PIDConstants(3, 0, 0.2),
                                             new PIDConstants(5, 0, 0),
                                             TunerConstants.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
