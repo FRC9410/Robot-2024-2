@@ -2,6 +2,9 @@ package frc.robot.subsystems.state.requests;
 
 import frc.robot.subsystems.StateMachine.State;
 import frc.robot.subsystems.state.helpers.IntakeHelpers;
+
+import java.util.List;
+
 import frc.robot.subsystems.StateMachine;
 import frc.team9410.lib.StateRequestHandler;
 
@@ -11,6 +14,14 @@ public class IdleStateRequest implements StateRequestHandler {
     }
     
     public void execute(StateMachine state) {
-        state.setState(State.IDLE);
+        state.removeMultipleCommandKeys(List.of(
+            "targetX",
+            "targetY",
+            "targetRotation",
+            "intakeRollerVelocity",
+            "intakeRollerFeedForward",
+            "intakeWristSetpoint",
+            "shooterFeederVelocity",
+            "shooterWheelsVelocity"));
     }
 }

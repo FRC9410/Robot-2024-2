@@ -10,6 +10,5 @@ public class DemoModeStateRequest implements StateRequestHandler {
     }
     
     public void execute(StateMachine state) {
-        state.setState(State.DEMO_MODE);
     }
 }

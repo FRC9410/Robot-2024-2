@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,7 +11,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
-import frc.robot.commands.group.TimedShootNoteCommand;
 import frc.robot.subsystems.Subsystems;
 
 /** Add your docs here. */
@@ -46,7 +44,6 @@ public class Dashboard {
     }
 
     public void registerNamedCommands(Subsystems subsystems) {
-        NamedCommands.registerCommand("TimedShootNoteCommand", new TimedShootNoteCommand(subsystems));
         NamedCommands.registerCommand("IntakeNoteCommand", new IntakeNoteCommand(subsystems));
         NamedCommands.registerCommand("IntakeCommand", new VoltageIntakeCommand(subsystems.getIntakeRollers(), -10, -6,100));
     }

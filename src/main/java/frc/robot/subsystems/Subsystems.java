@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.TunerConstants;
 
@@ -19,10 +18,6 @@ public class Subsystems {
     private Vision vision = new Vision((key, value) -> updateSubsystemData(key, value));
     private IntakeWrist intakeWrist = new IntakeWrist((key, value) -> updateSubsystemData(key, value));
     private IntakeRollers intakeRollers = new IntakeRollers((key, value) -> updateSubsystemData(key, value));
-    private ShooterWrist shooterWrist = new ShooterWrist((key, value) -> updateSubsystemData(key, value));
-    private ShooterFeeder shooterFeeder = new ShooterFeeder((key, value) -> updateSubsystemData(key, value));
-    private ShooterWheels shooterWheels = new ShooterWheels((key, value) -> updateSubsystemData(key, value));
-    private Elevator elevator = new Elevator((key, value) -> updateSubsystemData(key, value));
     private StateMachine stateMachine;
 
     public Subsystems(CommandXboxController controller) {
@@ -57,22 +52,6 @@ public class Subsystems {
 
     public IntakeRollers getIntakeRollers() {
         return intakeRollers;
-    }
-
-    public ShooterWrist getShooterWrist() {
-        return shooterWrist;
-    }
-
-    public ShooterFeeder getShooterFeeder() {
-        return shooterFeeder;
-    }
-
-    public ShooterWheels getShooterWheels() {
-        return shooterWheels;
-    }
-
-    public Elevator getElevator() {
-        return elevator;
     }
 
     public StateMachine getStateMachine() {

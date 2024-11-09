@@ -53,30 +53,7 @@ public class DefaultDriveCommand extends Command {
     // }
     double direction = robotState.getAllianceColor() == "red" ? -1 : 1;
 
-    if (robotState.getCommandData("targetRotation") != null && robotState.getState().equals(State.SHOOTING_READY)){
-      // if (followPathCommand != null) {
-      //   followPathCommand.cancel();
-      // }
-
-      double rotation = (double) robotState.getSubsystemData("rotation");
-      double targetRotation = (double) robotState.getCommandData("targetRotation");
-      double rotationDiff = normalizeAngle(targetRotation - rotation);
-      double rps = getRpsDistance(-rotationDiff);
-
-      if (Math.abs(rotationDiff) < 2) {
-        rps = 0;
-      }
-      
-
-      drivetrain.drive(
-        // robotState.getState() == State.INTAKING ? -0.5 * DriveConstants.MaxSpeed : Utility.getSpeed(controller.getLeftY() * getDirection()) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed * direction,
-        Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed * direction,
-        rps,
-        // robotState.getState() == State.INTAKING ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
-        DriveMode.FIELD_RELATIVE);
-    }
-    else if (robotState.getCommandData("targetRotation") != null && robotState.getState().equals(State.INTAKING)){
+    if (robotState.getCommandData("targetRotation") != null){
       // if (followPathCommand != null) {
       //   followPathCommand.cancel();
       // }

@@ -28,13 +28,8 @@ public class DefaultIntakeRollersCommand extends Command {
   public void execute() {
     if (robotState.getCommandData("intakeRollerVelocity") != null
         && robotState.getCommandData("intakeRollerFeedForward") != null) {
-      if (robotState.getState().equals(State.INTAKING)) {
-        intakeRollers.setVoltage((double) robotState.getCommandData("intakeRollerVelocity"),
-          (double) robotState.getCommandData("intakeRollerFeedForward"));
-      } else {
-        intakeRollers.setVoltage((double) robotState.getCommandData("intakeRollerVelocity"),
-          (double) robotState.getCommandData("intakeRollerFeedForward")); 
-      }
+      intakeRollers.setVoltage((double) robotState.getCommandData("intakeRollerVelocity"),
+        (double) robotState.getCommandData("intakeRollerFeedForward"));
     } else {
       intakeRollers.setOff();
     }

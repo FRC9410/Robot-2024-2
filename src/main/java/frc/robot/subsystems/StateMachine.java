@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.state.states.*;
 import frc.robot.subsystems.state.requests.*;
 import frc.team9410.lib.StateHandler;
 import frc.team9410.lib.StateRequestHandler;
@@ -27,38 +26,16 @@ public class StateMachine extends SubsystemBase {
 
   private final Debouncer debouncer = new Debouncer(0.5, Debouncer.DebounceType.kBoth);
 
-  private State state = State.IDLE;
   private String allianceColor;
 
   private boolean isFollowingPath = false;
-  private boolean commandExecuting = false;
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private NetworkTable dashboardTable = inst.getTable("Dashboard");
   
   private final List<StateRequestHandler> requestHandlers = List.of(
     new DemoModeStateRequest(),
     new DevModeStateRequest(),
     new IntakingStateRequest(),
-    new ShootingStateRequest(),
-    new ShootingReadyStateRequest(),
-    new DunkingStateRequest(),
-    new DunkingReadyStateRequest(),
-    new ClimbingLeftReadyStateRequest(),
-    new ClimbingRightReadyStateRequest(),
     new IdleStateRequest()
-  );
-  
-  private final List<StateHandler> stateHandlers = List.of(
-    new DemoModeState(),
-    new DevModeState(),
-    new IntakingState(),
-    new ShootingReadyState(),
-    new ShootingState(),
-    new DunkingReadyState(),
-    new DunkingState(),
-    new ClimbingLeftReadyState(),
-    new ClimbingRightReadyState(),
-    new IdleState()
   );
 
   public StateMachine(CommandSwerveDrivetrain drivetrain, Map<String, Object> subsystemData) {
@@ -83,23 +60,9 @@ public class StateMachine extends SubsystemBase {
     updateSubsystemData("locationX", pose.getX());
     updateSubsystemData("locationY", pose.getY());
     updateSubsystemData("rotation", pose.getRotation().getDegrees());
-    updateSubsystemData("state", state);
-
-    if (!commandExecuting) {
-      for (StateHandler handler : stateHandlers) {
-        if (handler.matches(state)) {
-          handler.execute(this);
-          break;
-        }
-      }
-    }
 
     logMap(subsystemData, "Subsystem Data");
     logMap(commandData, "Command Data");
-  }
-
-  public State getState() {
-    return state;
   }
 
   public String getAllianceColor() {
@@ -172,14 +135,6 @@ public class StateMachine extends SubsystemBase {
     return debouncer;
   }
 
-  public void setCommandExecuting(boolean commandExecuting) {
-    this.commandExecuting = commandExecuting;
-  }
-
-  public void setState(State state) {
-    this.state = state;
-  }
-
   public void requestStateChange(State requestedState) {
     for (StateRequestHandler handler : requestHandlers) {
       if (handler.matches(this, requestedState)) {
@@ -207,12 +162,6 @@ public class StateMachine extends SubsystemBase {
   public enum State {
     IDLE,
     INTAKING,
-    SHOOTING,
-    SHOOTING_READY,
-    DUNKING,
-    DUNKING_READY,
-    CLIMBING_LEFT_READY,
-    CLIMBING_RIGHT_READY,
     COMMAND_EXECUTING,
     DEV_MODE,
     DEMO_MODE

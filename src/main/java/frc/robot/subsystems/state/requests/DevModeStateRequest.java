@@ -10,6 +10,5 @@ public class DevModeStateRequest implements StateRequestHandler {
     }
     
     public void execute(StateMachine state) {
-        state.setState(State.DEV_MODE);
     }
 }
